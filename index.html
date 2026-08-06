@@ -838,7 +838,8 @@ function pedir(){
     );
 
     // Vaciar el carrito
-    localStorage.removeItem("carrito");
+localStorage.removeItem("carrito");
+carrito = [];
 
     // Quitar la selección de las tarjetas
     document.querySelectorAll(".card.seleccionada").forEach(card=>{
