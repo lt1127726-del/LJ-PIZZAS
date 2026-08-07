@@ -669,6 +669,8 @@ Domingo: 17:00 às 22:00
 
 </section>
 <footer>© 2026 Tu Pizzería</footer>
+
+
 <script src="carrito.js"></script>
 <script>
 console.log("agregarProducto:", typeof agregarProducto);
@@ -833,28 +835,12 @@ function pedir(){
     });
 
     window.open(
-        "https://wa.me/559684241554?text=" + mensaje,
-        "_blank"
-    );
+    "https://wa.me/559684241554?text=" + mensaje,
+    "_blank"
+);
 
-    // Vaciar el carrito
-localStorage.removeItem("carrito");
-carrito = [];
-
-    // Quitar la selección de las tarjetas
-    document.querySelectorAll(".card.seleccionada").forEach(card=>{
-        card.classList.remove("seleccionada");
-    });
-
-    // Quitar la selección de los tamaños
-    document.querySelectorAll(".tamanho.ativo").forEach(item=>{
-        item.classList.remove("ativo");
-    });
-
-    // Actualizar el contador
-    actualizarContador();
-
-}
+ } // 
+    
 function animarProducto(card){
 
     const imagen = card.querySelector("img");

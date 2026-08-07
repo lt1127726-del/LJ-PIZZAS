@@ -23,6 +23,8 @@ function vaciarCarrito(){
 
     guardarCarrito();
 
+    actualizarContador();
+
 }
 function totalProductos(){
 

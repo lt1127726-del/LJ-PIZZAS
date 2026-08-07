@@ -432,6 +432,145 @@ header{
     }
 
 }
+
+/*==================================
+    MODAL PEDIDO
+===================================*/
+
+.modal-pedido{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.75);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+}
+
+.modal-contenido{
+
+    width:90%;
+    max-width:420px;
+
+    background:#222;
+
+    border-radius:18px;
+
+    padding:35px;
+
+    text-align:center;
+
+    box-shadow:0 20px 60px rgba(0,0,0,.45);
+
+    animation:modal .25s ease;
+
+}
+
+.modal-icono{
+
+    font-size:60px;
+
+    margin-bottom:15px;
+
+}
+
+.modal-contenido h2{
+
+    color:#fff;
+
+    margin-bottom:15px;
+
+}
+
+.modal-contenido p{
+
+    color:#ddd;
+
+    line-height:1.6;
+
+    margin-bottom:30px;
+
+}
+
+.modal-botoes{
+
+    display:flex;
+
+    gap:15px;
+
+}
+
+.btn-cancelar{
+
+    flex:1;
+
+    background:#555;
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:14px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+}
+
+.btn-confirmar{
+
+    flex:1;
+
+    background:#d32f2f;
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:14px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+}
+
+.btn-cancelar:hover{
+
+    background:#666;
+
+}
+
+.btn-confirmar:hover{
+
+    background:#b71c1c;
+
+}
+
+@keyframes modal{
+
+    from{
+
+        transform:scale(.85);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
 </style>
 
 </head>
@@ -579,6 +718,51 @@ function menos(indice){
 carregarCarrito();
 function enviarWhatsApp(){
 
+// Cancelar
+document.getElementById("cancelarModal").onclick = function(){
+
+    document.getElementById("modalPedido").style.display = "none";
+
+}
+
+// Abrir WhatsApp
+document.getElementById("abrirWhatsapp").onclick = function(){
+
+    window.open(
+        "https://wa.me/559684241554?text=" + window.mensagemWhatsApp,
+        "_blank"
+    );
+
+    document.getElementById("paso1").style.display = "none";
+    document.getElementById("paso2").style.display = "block";
+
+}
+
+// Volver al carrito
+document.getElementById("volverCarrito").onclick = function(){
+
+    document.getElementById("paso1").style.display = "block";
+    document.getElementById("paso2").style.display = "none";
+    document.getElementById("modalPedido").style.display = "none";
+
+}
+
+// Pedido enviado
+document.getElementById("pedidoEnviado").onclick = function(){
+
+    vaciarCarrito();
+
+    carregarCarrito();
+
+    actualizarContador();
+
+    document.getElementById("paso1").style.display = "block";
+    document.getElementById("paso2").style.display = "none";
+    document.getElementById("modalPedido").style.display = "none";
+
+    alert("Obrigado! Seu pedido foi enviado com sucesso.");
+
+}
     const carrito = obtenerCarrito();
 
     if(carrito.length === 0){
@@ -612,16 +796,119 @@ function enviarWhatsApp(){
     });
 
     mensagem += "----------------------------%0A";
-    mensagem += "🛒 Total de itens: " + itens + "%0A";
-    mensagem += "💰 Total: R$ " + total.toFixed(2);
+mensagem += "🛒 Total de itens: " + itens + "%0A";
+mensagem += "💰 Total: R$ " + total.toFixed(2);
+
+window.mensagemWhatsApp = mensagem;
+
+document.getElementById("paso1").style.display = "block";
+document.getElementById("paso2").style.display = "none";
+
+document.getElementById("modalPedido").style.display = "flex";
+
+}
+
+document.getElementById("volverCarrito").onclick = function(){
+
+    document.getElementById("paso1").style.display = "block";
+
+    document.getElementById("paso2").style.display = "none";
+
+    document.getElementById("modalPedido").style.display = "none";
+
+}
+
+document.getElementById("abrirWhatsapp").onclick = function(){
 
     window.open(
-        "https://wa.me/559684241554?text=" + mensagem,
+        "https://wa.me/559684241554?text=" + window.mensagemWhatsApp,
         "_blank"
     );
+
+    document.getElementById("paso1").style.display = "none";
+    document.getElementById("paso2").style.display = "block";
+
+}
+
+document.getElementById("cancelarModal").onclick = function(){
+
+    document.getElementById("modalPedido").style.display = "none";
+
+}
+document.getElementById("pedidoEnviado").onclick = function(){
+
+    vaciarCarrito();
+
+    carregarCarrito();
+
+    actualizarContador();
+
+    document.getElementById("paso1").style.display = "block";
+
+    document.getElementById("paso2").style.display = "none";
+
+    document.getElementById("modalPedido").style.display = "none";
 
 }
 
 </script>
+
+<div id="modalPedido" class="modal-pedido">
+
+    <div class="modal-contenido">
+
+        <!-- Paso 1 -->
+      <div id="paso1">
+
+    <div class="modal-icono">🍕</div>
+
+    <h2>Confirmar pedido</h2>
+
+    <p>
+        Seu pedido será aberto no WhatsApp.
+        <br><br>
+        Deseja continuar?
+    </p>
+
+    <div class="modal-botoes">
+
+        <button id="cancelarModal" class="btn-cancelar">
+            Cancelar
+        </button>
+
+        <button id="abrirWhatsapp" class="btn-confirmar">
+            Abrir WhatsApp
+        </button>
+
+    </div>
+
+</div>
+        <!-- Paso 2 -->
+        <div id="paso2" style="display:none;">
+
+    <div class="modal-icono">✅</div>
+
+    <h2>Pedido enviado</h2>
+
+    <p>
+        Depois de enviar a mensagem no WhatsApp,
+        confirme para finalizar seu pedido.
+    </p>
+
+    <div class="modal-botoes">
+
+        <button id="volverCarrito" class="btn-cancelar">
+            Voltar
+        </button>
+
+        <button id="pedidoEnviado" class="btn-confirmar">
+            Pedido enviado
+        </button>
+
+    </div>
+
+</div>
+
+
 </body>
 </html>
