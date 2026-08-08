@@ -15,15 +15,38 @@ header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 40px;
+    padding: 0 20px;
     z-index: 9999;
     box-shadow: 0 4px 20px rgba(0,0,0,.4);
+    box-sizing:border-box;
 }.logo-img{
     width: 65px;
     height: 65px;
     object-fit: contain;
 }
-nav a{color:#fff;text-decoration:none;background:#d32f2f;padding:10px 18px;border-radius:20px}
+nav a{
+    color:#ffffff;
+    text-decoration:none;
+    background:none;
+    padding:0;
+    border:none;
+    border-radius:0;
+
+    font-family:'Cinzel', serif;
+    font-style:italic;
+    font-size:18px;
+    font-weight:600;
+
+    transition:color .3s ease;
+}
+
+nav a:hover{
+    color:#FFD700;
+}
+
+nav a.ativo{
+    color:#FFD700;
+}
 
 .hero{text-align:center;padding:50px;background:linear-gradient(#0008,#0008),url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=80');background-size:cover}
 
@@ -465,10 +488,50 @@ animation:rebote .5s;
     }
 
 }
+
+html{
+    scroll-behavior:smooth;
+}
+
+#informacoes{
+    scroll-margin-top:100px;
+}
+
+
+nav a{
+    color:#ffffff;
+    text-decoration:none;
+
+    font-family:'Cinzel', serif;
+    font-style:italic;
+
+    font-size:18px;
+    font-weight:600;
+
+    transition:color .3s ease;
+}
+
+nav a:hover{
+    color:#FFD700;
+}
+
+nav a.ativo{
+    color:#FFD700;
+}
+
 </style></head>
 <body>
 <header>
-<img src="0.png" alt="LJ Pizzas" class="logo-img">
+
+    <img src="0.png" alt="LJ Pizzas" class="logo-img">
+
+    <nav>
+        <a href="#informacoes" id="linkInformacoes">
+            Informações
+        </a>
+    </nav>
+
+
 </header>
 <section class='hero'><h1>Bem-vindo</h1><p>VIVA A EXPERIENCIA.</p></section>
 <section class='grid'>
@@ -559,113 +622,137 @@ Nossa missão é oferecer sabor, qualidade e um atendimento acolhedor para que c
 
 </p>
 
-<div class="info-contato">
+<section id="informacoes" class="info-contato">
 
 <h3>Informações</h3>
 
-<div class="info-item">
-
-<div class="icone">📍</div>
-
-<div class="info-texto">
-
-<strong>Endereço</strong>
-
-<span>Rua das Palmeiras, 250 - Centro - São Paulo</span>
-
-</div>
-
-</div>
 
 <div class="info-item">
 
-<div class="icone">📧</div>
+    <div class="icone">📍</div>
 
-<div class="info-texto">
+    <div class="info-texto">
 
-<strong>E-mail</strong>
+        <strong>Endereço</strong>
 
-<span>contato@ljpizzas.com.br</span>
+        <a href="https://maps.app.goo.gl/jGrRUDaFJNXL1BsB9" target="_blank">
+            Rua Martinho Boschetti, 2013 - Picadas do Sul - São José
+        </a>
+
+    </div>
 
 </div>
 
-</div>
+
 
 <div class="info-item">
 
-<div class="icone">📞</div>
+    <div class="icone">✉️</div>
 
-<div class="info-texto">
+    <div class="info-texto">
 
-<strong>Telefone</strong>
+        <strong>E-mail</strong>
 
-<span>(11) 99999-9999</span>
+        <a href="mailto:lt1127726@gmail.com">
+            lt1127726@gmail.com
+        </a>
+
+    </div>
 
 </div>
 
-</div>
+
 
 <div class="info-item">
 
-<div class="icone">📘</div>
+    <div class="icone">📱</div>
 
-<div class="info-texto">
+    <div class="info-texto">
 
-<strong>Facebook</strong>
+        <strong>WhatsApp</strong>
 
-<span>LJ Pizzas Oficial</span>
+        <a href="https://wa.me/559684241554" target="_blank">
+            (96) 8424-1554
+        </a>
+
+    </div>
 
 </div>
 
-</div>
+
 
 <div class="info-item">
 
-<div class="icone">📸</div>
+    <div class="icone">📘</div>
 
-<div class="info-texto">
+    <div class="info-texto">
 
-<strong>Instagram</strong>
+        <strong>Facebook</strong>
 
-<span>@ljpizzas</span>
+        <a href="https://www.facebook.com/profile.php?id=61592359494549" target="_blank">
+            LJ Pizzas
+        </a>
+
+    </div>
 
 </div>
 
-</div>
+
 
 <div class="info-item">
 
-<div class="icone">🎵</div>
+    <div class="icone">📸</div>
 
-<div class="info-texto">
+    <div class="info-texto">
 
-<strong>TikTok</strong>
+        <strong>Instagram</strong>
 
-<span>@ljpizzasoficial</span>
+        <a href="https://www.instagram.com/001lj2026/" target="_blank">
+            @001lj2026
+        </a>
+
+    </div>
 
 </div>
 
-</div>
+
 
 <div class="info-item">
 
-<div class="icone">🕒</div>
+    <div class="icone">🎵</div>
 
-<div class="info-texto">
+    <div class="info-texto">
 
-<strong>Horário de Funcionamento</strong>
+        <strong>TikTok</strong>
 
-<span>
-Segunda a Quinta: 18:00 às 23:00<br>
-Sexta e Sábado: 18:00 às 00:00<br>
-Domingo: 17:00 às 22:00
-</span>
+        <a href="https://www.tiktok.com/@user5477168685128" target="_blank">
+            LJ PIZZAS
+        </a>
 
-</div>
+    </div>
 
 </div>
 
+
+
+<div class="info-item">
+
+    <div class="icone">🕒</div>
+
+    <div class="info-texto">
+
+        <strong>Horário de Funcionamento</strong>
+
+        <span>
+            Segunda-feira: fechado<br>
+            Terça a sexta: 10h às 22h<br>
+            Sábado e domingo: 10h às 23h
+        </span>
+
+    </div>
+
 </div>
+
 
 </section>
 <footer>© 2026 Tu Pizzería</footer>
@@ -675,6 +762,8 @@ Domingo: 17:00 às 22:00
 <script>
 console.log("agregarProducto:", typeof agregarProducto);
 console.log("eliminarProductoPorNombre:", typeof eliminarProductoPorNombre);
+
+
 </script>
 <script>
 console.log("carrito.js cargado");
@@ -725,7 +814,11 @@ if(this.classList.contains("ativo")){
 
     this.classList.remove("ativo");
 
+    eliminarTamanho(producto.nombre);
+
     eliminarProductoPorNombre(producto.nombre);
+    
+    
 
 }else{
 
@@ -734,6 +827,8 @@ if(this.classList.contains("ativo")){
     grupo.forEach(item=>item.classList.remove("ativo"));
 
     this.classList.add("ativo");
+    
+    guardarTamanho(producto.nombre);
 
     const productos = obtenerCarrito();
 
@@ -783,15 +878,19 @@ tarjetas.forEach(card => {
 
             this.classList.remove("seleccionada");
 
-            eliminarProductoPorNombre(nombre);
+eliminarSeleccion(nombre);
+
+eliminarProductoPorNombre(nombre);
 
             actualizarContador();
 
         }else{
 
-            this.classList.add("seleccionada");
-     
-console.log("Producto agregado:", nombre);
+    this.classList.add("seleccionada");
+
+    guardarSeleccion(nombre);
+
+    console.log("Producto agregado:", nombre);
             agregarProducto({
                 nombre:nombre,
                 precio:precio,
@@ -808,6 +907,60 @@ console.log("Producto agregado:", nombre);
 
 });
 
+function guardarSeleccion(nombre){
+
+    let seleccionadas = JSON.parse(
+        localStorage.getItem("seleccionadas")
+    ) || [];
+
+    if(!seleccionadas.includes(nombre)){
+
+        seleccionadas.push(nombre);
+
+    }
+
+    localStorage.setItem(
+        "seleccionadas",
+        JSON.stringify(seleccionadas)
+    );
+
+}
+
+function guardarTamanho(nombre){
+
+    let tamanhos = JSON.parse(
+        localStorage.getItem("tamanhos")
+    ) || [];
+
+    if(!tamanhos.includes(nombre)){
+
+        tamanhos.push(nombre);
+
+    }
+
+    localStorage.setItem(
+        "tamanhos",
+        JSON.stringify(tamanhos)
+    );
+
+}
+
+function eliminarSeleccion(nombre){
+
+    let seleccionadas = JSON.parse(
+        localStorage.getItem("seleccionadas")
+    ) || [];
+
+    seleccionadas = seleccionadas.filter(
+        item => item !== nombre
+    );
+
+    localStorage.setItem(
+        "seleccionadas",
+        JSON.stringify(seleccionadas)
+    );
+
+}
 
 function pedir(){
 
@@ -885,12 +1038,110 @@ function animarProducto(card){
     },700);
 
 }
+
+function guardarTamanho(nombre){
+
+    let tamanhos = JSON.parse(
+        localStorage.getItem("tamanhos")
+    ) || [];
+
+    if(!tamanhos.includes(nombre)){
+
+        tamanhos.push(nombre);
+
+    }
+
+    localStorage.setItem(
+        "tamanhos",
+        JSON.stringify(tamanhos)
+    );
+
+}
+
+
+function eliminarTamanho(nombre){
+
+    let tamanhos = JSON.parse(
+        localStorage.getItem("tamanhos")
+    ) || [];
+
+    tamanhos = tamanhos.filter(
+        item => item !== nombre
+    );
+
+    localStorage.setItem(
+        "tamanhos",
+        JSON.stringify(tamanhos)
+    );
+
+}
+
 function abrirCarrito(){
 
     window.location.href = "carrito.html";
 
 }
 actualizarContador();
+
+document.addEventListener("DOMContentLoaded", ()=>{
+    actualizarContador();
+});
+
+document.addEventListener("DOMContentLoaded", ()=>{
+
+    let seleccionadas = JSON.parse(
+        localStorage.getItem("seleccionadas")
+    ) || [];
+
+    tarjetas.forEach(card=>{
+
+        const nombre = card.querySelector("h3").textContent;
+
+        if(seleccionadas.includes(nombre)){
+
+            card.classList.add("seleccionada");
+
+        }
+
+    });
+
+});
+
+document.addEventListener("DOMContentLoaded", ()=>{
+
+    let tamanhos = JSON.parse(
+        localStorage.getItem("tamanhos")
+    ) || [];
+
+
+    document.querySelectorAll(".tamanho").forEach(btn=>{
+
+        const card = btn.closest(".card");
+
+        const nombre = card.querySelector("h3").textContent;
+
+        const productoNombre = nombre + " - " + btn.textContent;
+
+
+        if(tamanhos.includes(productoNombre)){
+
+            btn.classList.add("ativo");
+
+        }
+
+    });
+
+});
+
+const linkInformacoes = document.getElementById("linkInformacoes");
+
+linkInformacoes.addEventListener("click", function(){
+
+    this.classList.add("ativo");
+
+});
+
+</script>
 </script>
 <button id="botonCarrito" onclick="abrirCarrito()">
     🛒

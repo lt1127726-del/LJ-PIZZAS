@@ -122,7 +122,12 @@ function actualizarContador(){
     contador.textContent = totalProductos();
 
 }
-actualizarContador();
+document.addEventListener("DOMContentLoaded", function(){
+
+    actualizarContador();
+
+});
+
 
 console.log("===== PRUEBA =====");
 console.log(typeof agregarProducto);

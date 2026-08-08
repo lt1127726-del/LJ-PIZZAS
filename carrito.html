@@ -571,6 +571,81 @@ header{
     }
 
 }
+
+.tipo-entrega{
+    margin:25px auto;
+    max-width:700px;
+}
+
+.tipo-entrega h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.opcoes-entrega{
+    display:flex;
+    gap:15px;
+    justify-content:center;
+}
+
+.opcao-entrega{
+    flex:1;
+    padding:15px;
+    background:#222;
+    color:#fff;
+    border:2px solid #555;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
+}
+
+.opcao-entrega:hover{
+    border-color:#d4a017;
+}
+
+.opcao-entrega.selecionado{
+    border-color:#d4a017;
+    background:#2b2b2b;
+    color:#FFD700;
+    box-shadow:0 0 15px rgba(212,160,23,.35);
+}
+
+.info-entrega{
+    margin-top:20px;
+    padding:20px;
+    background:#1b1b1b;
+    border-radius:12px;
+}
+
+.info-entrega h3{
+    color:#ff9800;
+}
+
+.info-entrega input{
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    margin:10px 0;
+    padding:12px;
+    border:1px solid #555;
+    border-radius:8px;
+    background:#222;
+    color:#fff;
+    font-size:15px;
+}
+
+.info-entrega input::placeholder{
+    color:#aaa;
+}
+
+.opcao-entrega.selecionado{
+    background:#FFD54F;
+    color:#111;
+    border:2px solid #ff9800;
+    transform:scale(1.02);
+    box-shadow:0 0 12px rgba(255,152,0,.5);
+}
 </style>
 
 </head>
@@ -619,6 +694,101 @@ R$ 0,00
 
 </div>
 
+<div class="tipo-entrega">
+
+    <h2>Como deseja receber seu pedido?</h2>
+
+    <div class="opcoes-entrega">
+
+        <button
+            type="button"
+            class="opcao-entrega"
+            id="retiradaLocal"
+            onclick="selecionarEntrega('retirada')">
+
+            🏠 Retirar no local
+
+        </button>
+
+        <button
+            type="button"
+            class="opcao-entrega"
+            id="delivery"
+            onclick="selecionarEntrega('delivery')">
+
+            🛵 Delivery
+
+        </button>
+
+    </div>
+
+
+    <!-- INFORMAÇÕES PARA RETIRADA -->
+
+    <div id="infoRetirada" class="info-entrega" style="display:none;">
+
+        <h3>📍 Retirada no local</h3>
+
+        <p>
+            <strong>Endereço:</strong><br>
+            Rua Martinho Boschetti, 2013 - Picadas do Sul - São José
+        </p>
+
+        <p>
+            <strong>Horário de Funcionamento:</strong><br>
+            Segunda-feira: fechado<br>
+            Terça a sexta: 10h às 22h<br>
+            Sábado e domingo: 10h às 23h
+        </p>
+
+    </div>
+
+
+    <!-- FORMULÁRIO DELIVERY -->
+
+    <div id="formDelivery" class="info-entrega" style="display:none;">
+
+        <h3>🛵 Dados para entrega</h3>
+
+        <input
+            type="text"
+            id="nomeCliente"
+            placeholder="Nome"
+        >
+        <input
+    type="text"
+    id="cepCliente"
+    placeholder="CEP"
+    maxlength="9"
+    inputmode="numeric"
+>
+        <input
+            type="text"
+            id="enderecoCliente"
+            placeholder="Endereço"
+        >
+
+        <input
+            type="text"
+            id="numeroCliente"
+            placeholder="Número"
+        >
+
+        <input
+            type="text"
+            id="bairroCliente"
+            placeholder="Bairro"
+        >
+
+        <input
+            type="text"
+            id="complementoCliente"
+            placeholder="Complemento (opcional)"
+        >
+
+    </div>
+
+</div>
 <div class="botoes">
 
 <button class="botao voltar"
@@ -638,7 +808,117 @@ onclick="window.location.href='index.html'">
 
 </div>
 <script src="carrito.js"></script>
+<script>
 
+function selecionarEntrega(tipo){
+
+    const retirada = document.getElementById("retiradaLocal");
+    const delivery = document.getElementById("delivery");
+
+    const infoRetirada = document.getElementById("infoRetirada");
+    const formDelivery = document.getElementById("formDelivery");
+
+
+    if(tipo === "retirada"){
+
+        retirada.classList.add("selecionado");
+        delivery.classList.remove("selecionado");
+
+        infoRetirada.style.display = "block";
+        formDelivery.style.display = "none";
+
+        localStorage.setItem(
+            "tipoEntrega",
+            "retirada"
+        );
+
+    }
+
+
+    if(tipo === "delivery"){
+
+        delivery.classList.add("selecionado");
+        retirada.classList.remove("selecionado");
+
+        infoRetirada.style.display = "none";
+        formDelivery.style.display = "block";
+
+        localStorage.setItem(
+            "tipoEntrega",
+            "delivery"
+        );
+
+    }
+
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const tipoGuardado = localStorage.getItem("tipoEntrega");
+
+    if(tipoGuardado){
+
+        selecionarEntrega(tipoGuardado);
+
+    }
+
+});
+
+// ==============================
+// SALVAR DADOS DO CLIENTE
+// ==============================
+
+const camposCliente = [
+    "nomeCliente",
+    "cepCliente",
+    "enderecoCliente",
+    "numeroCliente",
+    "bairroCliente",
+    "complementoCliente"
+];
+
+camposCliente.forEach(function(id){
+
+    const campo = document.getElementById(id);
+
+    if(campo){
+
+        // Salvar automaticamente enquanto o cliente escreve
+        campo.addEventListener("input", function(){
+
+            localStorage.setItem(
+                id,
+                campo.value
+            );
+
+        });
+
+    }
+
+});
+
+
+// ==============================
+// RECUPERAR DADOS DO CLIENTE
+// ==============================
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    camposCliente.forEach(function(id){
+
+        const campo = document.getElementById(id);
+        const valorSalvo = localStorage.getItem(id);
+
+        if(campo && valorSalvo !== null){
+
+            campo.value = valorSalvo;
+
+        }
+
+    });
+
+});
+</script>
 <script>
 
 const listaProdutos = document.getElementById("listaProdutos");
@@ -716,142 +996,9 @@ function menos(indice){
 }
 
 carregarCarrito();
-function enviarWhatsApp(){
-
-// Cancelar
-document.getElementById("cancelarModal").onclick = function(){
-
-    document.getElementById("modalPedido").style.display = "none";
-
-}
-
-// Abrir WhatsApp
-document.getElementById("abrirWhatsapp").onclick = function(){
-
-    window.open(
-        "https://wa.me/559684241554?text=" + window.mensagemWhatsApp,
-        "_blank"
-    );
-
-    document.getElementById("paso1").style.display = "none";
-    document.getElementById("paso2").style.display = "block";
-
-}
-
-// Volver al carrito
-document.getElementById("volverCarrito").onclick = function(){
-
-    document.getElementById("paso1").style.display = "block";
-    document.getElementById("paso2").style.display = "none";
-    document.getElementById("modalPedido").style.display = "none";
-
-}
-
-// Pedido enviado
-document.getElementById("pedidoEnviado").onclick = function(){
-
-    vaciarCarrito();
-
-    carregarCarrito();
-
-    actualizarContador();
-
-    document.getElementById("paso1").style.display = "block";
-    document.getElementById("paso2").style.display = "none";
-    document.getElementById("modalPedido").style.display = "none";
-
-    alert("Obrigado! Seu pedido foi enviado com sucesso.");
-
-}
-    const carrito = obtenerCarrito();
-
-    if(carrito.length === 0){
-
-        alert("Seu carrinho está vazio.");
-
-        return;
-
-    }
-
-    let mensagem = "🍕 *NOVO PEDIDO - LJ PIZZAS*%0A%0A";
-
-    let total = 0;
-    let itens = 0;
-
-    carrito.forEach(produto=>{
-
-        mensagem +=
-        produto.cantidad + "x " +
-        produto.nombre +
-        "%0A";
-
-        mensagem +=
-        "R$ " +
-        (produto.precio * produto.cantidad).toFixed(2) +
-        "%0A%0A";
-
-        total += produto.precio * produto.cantidad;
-        itens += produto.cantidad;
-
-    });
-
-    mensagem += "----------------------------%0A";
-mensagem += "🛒 Total de itens: " + itens + "%0A";
-mensagem += "💰 Total: R$ " + total.toFixed(2);
-
-window.mensagemWhatsApp = mensagem;
-
-document.getElementById("paso1").style.display = "block";
-document.getElementById("paso2").style.display = "none";
-
-document.getElementById("modalPedido").style.display = "flex";
-
-}
-
-document.getElementById("volverCarrito").onclick = function(){
-
-    document.getElementById("paso1").style.display = "block";
-
-    document.getElementById("paso2").style.display = "none";
-
-    document.getElementById("modalPedido").style.display = "none";
-
-}
-
-document.getElementById("abrirWhatsapp").onclick = function(){
-
-    window.open(
-        "https://wa.me/559684241554?text=" + window.mensagemWhatsApp,
-        "_blank"
-    );
-
-    document.getElementById("paso1").style.display = "none";
-    document.getElementById("paso2").style.display = "block";
-
-}
-
-document.getElementById("cancelarModal").onclick = function(){
-
-    document.getElementById("modalPedido").style.display = "none";
-
-}
-document.getElementById("pedidoEnviado").onclick = function(){
-
-    vaciarCarrito();
-
-    carregarCarrito();
-
-    actualizarContador();
-
-    document.getElementById("paso1").style.display = "block";
-
-    document.getElementById("paso2").style.display = "none";
-
-    document.getElementById("modalPedido").style.display = "none";
-
-}
-
 </script>
+
+
 
 <div id="modalPedido" class="modal-pedido">
 
@@ -909,6 +1056,190 @@ document.getElementById("pedidoEnviado").onclick = function(){
 
 </div>
 
+<script>
+console.log("SCRIPT DEL CARRITO FUNCIONANDO");
 
+
+function enviarWhatsApp(){
+
+    const carrito = obtenerCarrito();
+
+    if(carrito.length === 0){
+
+        alert("Seu carrinho está vazio.");
+
+        return;
+
+    }
+
+
+    // ==============================
+    // TIPO DE ENTREGA
+    // ==============================
+
+    const tipoEntrega =
+        localStorage.getItem("tipoEntrega");
+
+    let formaEntrega = "Não informado";
+
+
+    if(tipoEntrega === "delivery"){
+
+        formaEntrega = "🛵 Delivery";
+
+    }
+
+
+    if(tipoEntrega === "retirada"){
+
+        formaEntrega = "🏠 Retirar no local";
+
+    }
+
+
+    // ==============================
+// DADOS DO CLIENTE
+// ==============================
+
+const dadosCliente = {
+
+    nome:
+        localStorage.getItem("nomeCliente") || "",
+
+    cep:
+        localStorage.getItem("cepCliente") || "",
+
+    endereco:
+        localStorage.getItem("enderecoCliente") || "",
+
+    numero:
+        localStorage.getItem("numeroCliente") || "",
+
+    bairro:
+        localStorage.getItem("bairroCliente") || "",
+
+    complemento:
+        localStorage.getItem("complementoCliente") || ""
+
+};
+
+
+    // ==============================
+    // MENSAGEM
+    // ==============================
+
+    let mensagem =
+        "🍕 *NOVO PEDIDO - LJ PIZZAS*\n\n";
+
+
+    let total = 0;
+    let itens = 0;
+
+
+    carrito.forEach(produto => {
+
+        mensagem +=
+            produto.cantidad +
+            "x " +
+            produto.nombre +
+            "\n";
+
+        mensagem +=
+            "R$ " +
+            (produto.precio * produto.cantidad).toFixed(2) +
+            "\n\n";
+
+
+        total +=
+            produto.precio * produto.cantidad;
+
+
+        itens +=
+            produto.cantidad;
+
+    });
+
+
+    mensagem +=
+        "----------------------------\n";
+
+
+    mensagem +=
+        "🛒 Total de itens: " +
+        itens +
+        "\n";
+
+
+    mensagem +=
+        "💰 Total: R$ " +
+        total.toFixed(2) +
+        "\n\n";
+
+
+    // ==============================
+    // FORMA DE ENTREGA
+    // ==============================
+
+    mensagem +=
+        "📦 *Forma de entrega:*\n" +
+        formaEntrega +
+        "\n\n";
+
+
+    // ==============================
+    // DADOS DO DELIVERY
+    // ==============================
+
+    if(tipoEntrega === "delivery"){
+
+        mensagem +=
+            "👤 *Dados do cliente:*\n";
+
+        mensagem +=
+            "Nome: " +
+            (dadosCliente.nome || "") +
+            "\n";
+
+        mensagem +=
+            "CEP: " +
+            (dadosCliente.cep || "") +
+            "\n";
+
+        mensagem +=
+            "Endereço: " +
+            (dadosCliente.endereco || "") +
+            "\n";
+
+        mensagem +=
+            "Número: " +
+            (dadosCliente.numero || "") +
+            "\n";
+
+        mensagem +=
+            "Bairro: " +
+            (dadosCliente.bairro || "") +
+            "\n";
+
+        mensagem +=
+            "Complemento: " +
+            (dadosCliente.complemento || "");
+
+    }
+
+
+    // ==============================
+    // ABRIR WHATSAPP
+    // ==============================
+
+    const url =
+        "https://wa.me/559684241554?text=" +
+        encodeURIComponent(mensagem);
+
+
+    window.open(url, "_blank");
+
+}
+
+</script>
 </body>
 </html>
