@@ -381,6 +381,7 @@ animation:rebote .5s;
 
 }
 
+```css
 /* ===========================
    RESPONSIVE PARA CELULARES
 =========================== */
@@ -389,32 +390,89 @@ animation:rebote .5s;
 
     body{
         padding-top:80px;
+        overflow-x:hidden;
     }
+
+
+    /* ===========================
+       HEADER
+    =========================== */
 
     header{
-        height:65px;
-        padding:0 15px;
-        justify-content:center;
+        height:auto;
+        min-height:70px;
+        padding:10px 15px;
+
+        display:flex;
+        justify-content:flex-start;
+        align-items:center;
+
+        gap:12px;
     }
 
-    .logo-img{
-        width:50px;
-        height:50px;
+
+    .logo{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        min-width:0;
     }
+
+
+    .logo-img{
+        width:48px;
+        height:48px;
+        flex-shrink:0;
+    }
+
+
+    .logo h1{
+        font-size:22px;
+        white-space:nowrap;
+    }
+
+
+    nav{
+        margin-left:auto;
+        display:flex;
+        align-items:center;
+    }
+
+
+    nav a{
+        font-size:15px;
+        padding:8px 10px;
+        white-space:nowrap;
+    }
+
+
+    /* ===========================
+       HERO
+    =========================== */
 
     .hero{
         padding:35px 15px;
+        text-align:center;
     }
+
 
     .hero h1{
         font-size:38px;
         letter-spacing:1px;
+        line-height:1.15;
     }
+
 
     .hero p{
         font-size:18px;
         letter-spacing:2px;
+        line-height:1.4;
     }
+
+
+    /* ===========================
+       PRODUTOS
+    =========================== */
 
     .grid{
         grid-template-columns:1fr;
@@ -422,39 +480,72 @@ animation:rebote .5s;
         gap:18px;
     }
 
-    .card img{
-        height:220px;
+
+    .card{
+        width:100%;
+        max-width:100%;
     }
+
+
+    .card img{
+        width:100%;
+        height:220px;
+        object-fit:cover;
+    }
+
 
     .card h3{
         font-size:20px;
     }
 
+
     .card p{
         font-size:16px;
     }
+
+
+    /* ===========================
+       TAMANHOS
+    =========================== */
 
     .tamanho{
         width:100%;
         margin:8px 0;
     }
 
+
+    /* ===========================
+       INFORMACIONES
+    =========================== */
+
     .info-contato{
+        width:calc(100% - 30px);
         margin:20px 15px;
         padding:20px;
+        box-sizing:border-box;
     }
+
 
     .info-item{
         align-items:flex-start;
+        gap:10px;
     }
 
+
+    /* ===========================
+       CARRITO FLUTUANTE
+    =========================== */
+
     #botonCarrito{
-        width:62px;
-        height:62px;
+        width:58px;
+        height:58px;
+
         right:15px;
         bottom:15px;
-        font-size:26px;
+
+        font-size:25px;
     }
+
 
     #contador{
         width:22px;
@@ -464,23 +555,93 @@ animation:rebote .5s;
 
 }
 
+
 /* ===========================
    CELULARES PEQUEÑOS
 =========================== */
 
 @media (max-width:480px){
 
+    header{
+        padding:9px 12px;
+        gap:8px;
+    }
+
+
+    .logo-img{
+        width:42px;
+        height:42px;
+    }
+
+
+    .logo h1{
+        font-size:19px;
+    }
+
+
+    nav a{
+        font-size:13px;
+        padding:7px 8px;
+    }
+
+
+    .hero{
+        padding:30px 12px;
+    }
+
+
     .hero h1{
         font-size:30px;
     }
 
+
     .hero p{
         font-size:15px;
+        letter-spacing:1px;
     }
+
+
+    .grid{
+        padding:12px;
+        gap:15px;
+    }
+
 
     .card img{
         height:190px;
     }
+
+
+    .card h3{
+        font-size:18px;
+    }
+
+
+    .card p{
+        font-size:15px;
+    }
+
+
+    .info-contato{
+        width:calc(100% - 24px);
+        margin:18px 12px;
+        padding:16px;
+    }
+
+
+    .info-item{
+        gap:8px;
+    }
+
+
+    #botonCarrito{
+        width:55px;
+        height:55px;
+        right:12px;
+        bottom:12px;
+        font-size:23px;
+    }
+
 
     footer{
         font-size:14px;
@@ -489,9 +650,15 @@ animation:rebote .5s;
 
 }
 
+
+/* ===========================
+   AJUSTES GENERALES
+=========================== */
+
 html{
     scroll-behavior:smooth;
 }
+
 
 #informacoes{
     scroll-margin-top:100px;
@@ -511,13 +678,13 @@ nav a{
     transition:color .3s ease;
 }
 
-nav a:hover{
-    color:#FFD700;
-}
 
+nav a:hover,
 nav a.ativo{
     color:#FFD700;
 }
+```
+
 
 </style></head>
 <body>
