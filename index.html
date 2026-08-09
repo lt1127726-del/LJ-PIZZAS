@@ -1111,7 +1111,70 @@ function guardarTamanho(nombre){
     );
 
 }
+document.addEventListener("DOMContentLoaded", function(){
 
+    const carrito = obtenerCarrito();
+
+    const tarjetas = document.querySelectorAll(".card");
+
+    tarjetas.forEach(card => {
+
+        const nombre =
+            card.querySelector("h3")?.textContent.trim();
+
+        if(!nombre){
+            return;
+        }
+
+        // ==============================
+        // LIMPIAR SELECCIÓN VISUAL
+        // ==============================
+
+        card.classList.remove("seleccionada");
+
+        const tamanhos =
+            card.querySelectorAll(".tamanho");
+
+        tamanhos.forEach(tamanho => {
+
+            tamanho.classList.remove("ativo");
+
+        });
+
+
+        // ==============================
+        // VERIFICAR CARRITO
+        // ==============================
+
+        const produtoSelecionado =
+            carrito.find(produto =>
+                produto.nombre === nome
+            );
+
+        if(produtoSelecionado){
+
+            // Si es una pizza con tamaño
+            tamanhos.forEach(tamanho => {
+
+                const texto =
+                    tamanho.textContent.trim();
+
+                if(
+                    produtoSelecionado.nombre ===
+                    nombre + " - " + texto
+                ){
+
+                    tamanho.classList.add("ativo");
+
+                }
+
+            });
+
+        }
+
+    });
+
+});
 function eliminarSeleccion(nombre){
 
     let seleccionadas = JSON.parse(
@@ -1254,52 +1317,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
     actualizarContador();
 });
 
-document.addEventListener("DOMContentLoaded", ()=>{
-
-    let seleccionadas = JSON.parse(
-        localStorage.getItem("seleccionadas")
-    ) || [];
-
-    tarjetas.forEach(card=>{
-
-        const nombre = card.querySelector("h3").textContent;
-
-        if(seleccionadas.includes(nombre)){
-
-            card.classList.add("seleccionada");
-
-        }
-
-    });
-
-});
-
-document.addEventListener("DOMContentLoaded", ()=>{
-
-    let tamanhos = JSON.parse(
-        localStorage.getItem("tamanhos")
-    ) || [];
-
-
-    document.querySelectorAll(".tamanho").forEach(btn=>{
-
-        const card = btn.closest(".card");
-
-        const nombre = card.querySelector("h3").textContent;
-
-        const productoNombre = nombre + " - " + btn.textContent;
-
-
-        if(tamanhos.includes(productoNombre)){
-
-            btn.classList.add("ativo");
-
-        }
-
-    });
-
-});
-
 const linkInformacoes = document.getElementById("linkInformacoes");
 
 linkInformacoes.addEventListener("click", function(){
@@ -1309,6 +1326,7 @@ linkInformacoes.addEventListener("click", function(){
 });
 
 </script>
+
 </script>
 <button id="botonCarrito" onclick="abrirCarrito()">
     🛒

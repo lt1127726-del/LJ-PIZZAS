@@ -433,23 +433,45 @@ header{
 
 }
 
+```css
 /*==================================
     MODAL PEDIDO
 ===================================*/
 
-.modal-pedido{
+.modal{
+
     position:fixed;
-    inset:0;
+
+    top:0;
+    left:0;
+
+    width:100vw;
+    height:100vh;
+
     background:rgba(0,0,0,.75);
+
     display:none;
+
     justify-content:center;
     align-items:center;
+
     z-index:99999;
+
+    padding:20px;
+
+    box-sizing:border-box;
+
 }
+
+
+/*==================================
+    CONTENIDO DEL MODAL
+===================================*/
 
 .modal-contenido{
 
     width:90%;
+
     max-width:420px;
 
     background:#222;
@@ -460,11 +482,19 @@ header{
 
     text-align:center;
 
-    box-shadow:0 20px 60px rgba(0,0,0,.45);
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.45);
 
     animation:modal .25s ease;
 
+    box-sizing:border-box;
+
 }
+
+
+/*==================================
+    ICONO
+===================================*/
 
 .modal-icono{
 
@@ -474,6 +504,11 @@ header{
 
 }
 
+
+/*==================================
+    TITULO
+===================================*/
+
 .modal-contenido h2{
 
     color:#fff;
@@ -481,6 +516,11 @@ header{
     margin-bottom:15px;
 
 }
+
+
+/*==================================
+    TEXTO
+===================================*/
 
 .modal-contenido p{
 
@@ -492,6 +532,11 @@ header{
 
 }
 
+
+/*==================================
+    BOTONES
+===================================*/
+
 .modal-botoes{
 
     display:flex;
@@ -499,6 +544,11 @@ header{
     gap:15px;
 
 }
+
+
+/*==================================
+    BOTÃO CANCELAR
+===================================*/
 
 .btn-cancelar{
 
@@ -520,6 +570,11 @@ header{
 
 }
 
+
+/*==================================
+    BOTÃO CONFIRMAR
+===================================*/
+
 .btn-confirmar{
 
     flex:1;
@@ -540,17 +595,24 @@ header{
 
 }
 
+
 .btn-cancelar:hover{
 
     background:#666;
 
 }
 
+
 .btn-confirmar:hover{
 
     background:#b71c1c;
 
 }
+
+
+/*==================================
+    ANIMAÇÃO
+===================================*/
 
 @keyframes modal{
 
@@ -571,6 +633,37 @@ header{
     }
 
 }
+
+
+/*==================================
+    MODAL NO CELULAR
+===================================*/
+
+@media(max-width:480px){
+
+    .modal{
+
+        padding:15px;
+
+    }
+
+    .modal-contenido{
+
+        width:100%;
+
+        padding:25px 20px;
+
+    }
+
+    .modal-botoes{
+
+        flex-direction:column;
+
+    }
+
+}
+```
+
 
 .tipo-entrega{
     margin:25px auto;
@@ -1222,6 +1315,7 @@ function menos(indice){
 carregarCarrito();
 </script>
 <script>
+
 // ==================================
 // VERIFICAR HORARIO
 // ==================================
@@ -1237,7 +1331,9 @@ function pizzeriaEstaAberta(){
     // Segunda-feira: fechado
 
     if(dia === 1){
+
         return false;
+
     }
 
 
@@ -1262,34 +1358,26 @@ function pizzeriaEstaAberta(){
     return false;
 
 }
-function enviarWhatsApp(){
-    
-if(!pizzeriaEstaAberta()){
 
-        alert(
-            "🔒 No momento estamos fechados.\n\n" +
-            "⏰ Horário de funcionamento:\n" +
-            "Segunda-feira: fechado\n" +
-            "Terça a sexta: 10h às 22h\n" +
-            "Sábado e domingo: 10h às 23h"
-        );
 
-        return;
-    }
-    
-function enviarWhatsApp(){
+// ==================================
+// REGISTRAR PEDIDO NO GOOGLE SHEETS
+// ==================================
 
 function registrarPedidoGoogleSheets(){
 
     const carrito = obtenerCarrito();
 
+
     if(carrito.length === 0){
+
         return;
+
     }
 
 
     // ==============================
-    // DATOS DEL CLIENTE
+    // DADOS DO CLIENTE
     // ==============================
 
     const dados = {
@@ -1328,7 +1416,7 @@ function registrarPedidoGoogleSheets(){
 
 
     // ==============================
-    // CREAR LISTA DEL PEDIDO
+    // CRIAR PEDIDO
     // ==============================
 
     let pedido = "";
@@ -1342,7 +1430,10 @@ function registrarPedidoGoogleSheets(){
             "x " +
             produto.nombre +
             " | R$ " +
-            (produto.precio * produto.cantidad).toFixed(2) +
+            (
+                produto.precio *
+                produto.cantidad
+            ).toFixed(2) +
             "\n";
 
 
@@ -1354,15 +1445,16 @@ function registrarPedidoGoogleSheets(){
 
 
     dados.pedido = pedido;
+
     dados.total = total.toFixed(2);
 
 
     // ==============================
-    // ENVIAR A GOOGLE SHEETS
+    // GOOGLE SHEETS
     // ==============================
 
     fetch(
-        "https://script.google.com/macros/s/AKfycbwc3_zNS_0ZLvBZttviqmJ9Hfgu8vWtNrANJR0h4vXOerbYSvE7SlD6KzL8nBFvKVakUA/exec",
+    "https://script.google.com/macros/s/AKfycbwvWkR818LVsmEctYD5UBDCzML1V_-VP1ObqVmSuhdh0S2k6dmqtK3VLvH1r8GRtyAmhA/exec",
         {
 
             method: "POST",
@@ -1373,7 +1465,6 @@ function registrarPedidoGoogleSheets(){
 
         }
     )
-
     .then(function(){
 
         console.log(
@@ -1381,11 +1472,10 @@ function registrarPedidoGoogleSheets(){
         );
 
     })
-
     .catch(function(error){
 
         console.error(
-            "❌ Error enviando pedido a Google Sheets:",
+            "❌ Erro enviando pedido para Google Sheets:",
             error
         );
 
@@ -1393,9 +1483,17 @@ function registrarPedidoGoogleSheets(){
 
 }
 
-    // ==================================
-    // VERIFICAR HORARIO
-    // ==================================
+
+// ==================================
+// ENVIAR PEDIDO
+// ==================================
+
+function enviarWhatsApp(){
+
+
+    // ==============================
+    // VERIFICAR HORÁRIO
+    // ==============================
 
     if(!pizzeriaEstaAberta()){
 
@@ -1408,26 +1506,31 @@ function registrarPedidoGoogleSheets(){
         );
 
         return;
+
     }
 
 
-    // ==================================
+    // ==============================
     // VERIFICAR CARRINHO
-    // ==================================
+    // ==============================
 
     const carrito = obtenerCarrito();
 
+
     if(carrito.length === 0){
 
-        alert("Seu carrinho está vazio.");
+        alert(
+            "Seu carrinho está vazio."
+        );
 
         return;
+
     }
 
 
-    // ==================================
-    // VERIFICAR FORMA DE ENTREGA
-    // ==================================
+    // ==============================
+    // TIPO DE ENTREGA
+    // ==============================
 
     const tipoEntrega =
         localStorage.getItem("tipoEntrega");
@@ -1440,12 +1543,13 @@ function registrarPedidoGoogleSheets(){
         );
 
         return;
+
     }
 
 
-    // ==================================
-    // VALIDAR DADOS DO DELIVERY
-    // ==================================
+    // ==============================
+    // VALIDAR DELIVERY
+    // ==============================
 
     if(tipoEntrega === "delivery"){
 
@@ -1471,9 +1575,12 @@ function registrarPedidoGoogleSheets(){
                 "⚠️ Por favor, informe seu nome."
             );
 
-            document.getElementById("nomeCliente")?.focus();
+            document
+                .getElementById("nomeCliente")
+                ?.focus();
 
             return;
+
         }
 
 
@@ -1483,9 +1590,12 @@ function registrarPedidoGoogleSheets(){
                 "⚠️ Por favor, informe seu CEP."
             );
 
-            document.getElementById("cepCliente")?.focus();
+            document
+                .getElementById("cepCliente")
+                ?.focus();
 
             return;
+
         }
 
 
@@ -1495,9 +1605,12 @@ function registrarPedidoGoogleSheets(){
                 "⚠️ Por favor, informe seu endereço."
             );
 
-            document.getElementById("enderecoCliente")?.focus();
+            document
+                .getElementById("enderecoCliente")
+                ?.focus();
 
             return;
+
         }
 
 
@@ -1507,9 +1620,12 @@ function registrarPedidoGoogleSheets(){
                 "⚠️ Por favor, informe o número do endereço."
             );
 
-            document.getElementById("numeroCliente")?.focus();
+            document
+                .getElementById("numeroCliente")
+                ?.focus();
 
             return;
+
         }
 
 
@@ -1519,38 +1635,44 @@ function registrarPedidoGoogleSheets(){
                 "⚠️ Por favor, informe seu bairro."
             );
 
-            document.getElementById("bairroCliente")?.focus();
+            document
+                .getElementById("bairroCliente")
+                ?.focus();
 
             return;
+
         }
 
     }
 
 
-    // ==================================
+    // ==============================
     // FORMA DE ENTREGA
-    // ==================================
+    // ==============================
 
-    let formaEntrega = "Não informado";
+    let formaEntrega =
+        "Não informado";
 
 
     if(tipoEntrega === "delivery"){
 
-        formaEntrega = "🛵 Delivery";
+        formaEntrega =
+            "🛵 Delivery";
 
     }
 
 
     if(tipoEntrega === "retirada"){
 
-        formaEntrega = "🏠 Retirar no local";
+        formaEntrega =
+            "🏠 Retirar no local";
 
     }
 
 
-    // ==================================
+    // ==============================
     // DADOS DO CLIENTE
-    // ==================================
+    // ==============================
 
     const dadosCliente = {
 
@@ -1575,9 +1697,9 @@ function registrarPedidoGoogleSheets(){
     };
 
 
-    // ==================================
+    // ==============================
     // CRIAR MENSAGEM
-    // ==================================
+    // ==============================
 
     let mensagem =
         "🍕 *NOVO PEDIDO - LJ PIZZAS*\n\n";
@@ -1588,7 +1710,7 @@ function registrarPedidoGoogleSheets(){
     let itens = 0;
 
 
-    carrito.forEach(produto => {
+    carrito.forEach(function(produto){
 
         mensagem +=
             produto.cantidad +
@@ -1596,9 +1718,13 @@ function registrarPedidoGoogleSheets(){
             produto.nombre +
             "\n";
 
+
         mensagem +=
             "R$ " +
-            (produto.precio * produto.cantidad).toFixed(2) +
+            (
+                produto.precio *
+                produto.cantidad
+            ).toFixed(2) +
             "\n\n";
 
 
@@ -1629,9 +1755,9 @@ function registrarPedidoGoogleSheets(){
         "\n\n";
 
 
-    // ==================================
+    // ==============================
     // FORMA DE ENTREGA
-    // ==================================
+    // ==============================
 
     mensagem +=
         "📦 *Forma de entrega:*\n" +
@@ -1639,39 +1765,45 @@ function registrarPedidoGoogleSheets(){
         "\n\n";
 
 
-    // ==================================
+    // ==============================
     // DADOS DO DELIVERY
-    // ==================================
+    // ==============================
 
     if(tipoEntrega === "delivery"){
 
         mensagem +=
             "👤 *Dados do cliente:*\n";
 
+
         mensagem +=
             "Nome: " +
             dadosCliente.nome +
             "\n";
+
 
         mensagem +=
             "CEP: " +
             dadosCliente.cep +
             "\n";
 
+
         mensagem +=
             "Endereço: " +
             dadosCliente.endereco +
             "\n";
+
 
         mensagem +=
             "Número: " +
             dadosCliente.numero +
             "\n";
 
+
         mensagem +=
             "Bairro: " +
             dadosCliente.bairro +
             "\n";
+
 
         mensagem +=
             "Complemento: " +
@@ -1680,426 +1812,391 @@ function registrarPedidoGoogleSheets(){
     }
 
 
-    // ==================================
+    // ==============================
     // GUARDAR MENSAGEM
-    // ==================================
+    // ==============================
 
-    window.mensagemPedido = mensagem;
+    window.mensagemPedido =
+        mensagem;
 
 
-    // ==================================
+    // ==============================
     // ABRIR MODAL
-    // ==================================
+    // ==============================
 
     abrirModalPedido();
 
 }
 
 
-    const carrito = obtenerCarrito();
-
-    if(carrito.length === 0){
-
-        alert("Seu carrinho está vazio.");
-
-        return;
-
-    }
-
-
-    // ==============================
-    // TIPO DE ENTREGA
-    // ==============================
-
-    const tipoEntrega =
-        localStorage.getItem("tipoEntrega");
-
-    let formaEntrega = "Não informado";
-
-
-    if(tipoEntrega === "delivery"){
-
-        formaEntrega = "🛵 Delivery";
-
-    }
-
-
-    if(tipoEntrega === "retirada"){
-
-        formaEntrega = "🏠 Retirar no local";
-
-    }
-
-
-    // ==============================
-// DADOS DO CLIENTE
-// ==============================
-
-const dadosCliente = {
-
-    nome:
-        localStorage.getItem("nomeCliente") || "",
-
-    cep:
-        localStorage.getItem("cepCliente") || "",
-
-    endereco:
-        localStorage.getItem("enderecoCliente") || "",
-
-    numero:
-        localStorage.getItem("numeroCliente") || "",
-
-    bairro:
-        localStorage.getItem("bairroCliente") || "",
-
-    complemento:
-        localStorage.getItem("complementoCliente") || ""
-
-};
-
-
-    // ==============================
-    // MENSAGEM
-    // ==============================
-
-    let mensagem =
-        "🍕 *NOVO PEDIDO - LJ PIZZAS*\n\n";
-
-
-    let total = 0;
-    let itens = 0;
-
-
-    carrito.forEach(produto => {
-
-        mensagem +=
-            produto.cantidad +
-            "x " +
-            produto.nombre +
-            "\n";
-
-        mensagem +=
-            "R$ " +
-            (produto.precio * produto.cantidad).toFixed(2) +
-            "\n\n";
-
-
-        total +=
-            produto.precio * produto.cantidad;
-
-
-        itens +=
-            produto.cantidad;
-
-    });
-
-
-    mensagem +=
-        "----------------------------\n";
-
-
-    mensagem +=
-        "🛒 Total de itens: " +
-        itens +
-        "\n";
-
-
-    mensagem +=
-        "💰 Total: R$ " +
-        total.toFixed(2) +
-        "\n\n";
-
-
-    // ==============================
-    // FORMA DE ENTREGA
-    // ==============================
-
-    mensagem +=
-        "📦 *Forma de entrega:*\n" +
-        formaEntrega +
-        "\n\n";
-
-
-    // ==============================
-    // DADOS DO DELIVERY
-    // ==============================
-
-    if(tipoEntrega === "delivery"){
-
-        mensagem +=
-            "👤 *Dados do cliente:*\n";
-
-        mensagem +=
-            "Nome: " +
-            (dadosCliente.nome || "") +
-            "\n";
-
-        mensagem +=
-            "CEP: " +
-            (dadosCliente.cep || "") +
-            "\n";
-
-        mensagem +=
-            "Endereço: " +
-            (dadosCliente.endereco || "") +
-            "\n";
-
-        mensagem +=
-            "Número: " +
-            (dadosCliente.numero || "") +
-            "\n";
-
-        mensagem +=
-            "Bairro: " +
-            (dadosCliente.bairro || "") +
-            "\n";
-
-        mensagem +=
-            "Complemento: " +
-            (dadosCliente.complemento || "");
-
-}
-    // ==============================
-    // ABRIR WHATSAPP
-    // ==============================
-
- 
-// ==============================
-// GUARDAR MENSAGEM E ABRIR MODAL
-// ==============================
-
-window.mensagemPedido = mensagem;
-
-abrirModalPedido();
-
-}
-
 // ==================================
-// ABRIR MODAL DE CONFIRMAÇÃO
+// ABRIR MODAL
 // ==================================
 
 function abrirModalPedido(){
 
-    const modal = document.getElementById("modalPedido");
+    const modal =
+        document.getElementById("modalPedido");
+
 
     if(modal){
 
-        modal.style.display = "flex";
-
+        modal.style.cssText = `
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: rgba(0,0,0,0.75) !important;
+    z-index: 999999 !important;
+`;
     }
 
 }
-
-
 
 
 // ==================================
 // BOTÕES DO MODAL
 // ==================================
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
 
-    const modal =
-        document.getElementById("modalPedido");
-
-    const cancelar =
-        document.getElementById("cancelarModal");
-
-    const abrirWhatsapp =
-        document.getElementById("abrirWhatsapp");
-
-    const paso1 =
-        document.getElementById("paso1");
-
-    const paso2 =
-        document.getElementById("paso2");
-
-
-    // ==============================
-    // CANCELAR
-    // ==============================
-
-    cancelar.addEventListener("click", function(){
-
-        modal.style.display = "none";
-
-    });
-
-
-    // ==============================
-    // ABRIR WHATSAPP
-    // ==============================
-
-    abrirWhatsapp.addEventListener("click", function(){
-
-        const url =
-            "https://wa.me/559684241554?text=" +
-            encodeURIComponent(
-                window.mensagemPedido
-            );
-
-        window.open(url, "_blank");
-
-
-        // Ir para o passo 2
-
-        paso1.style.display = "none";
-
-        paso2.style.display = "block";
-
-    });
-
-});
-
-// ==================================
-// FINALIZAR PEDIDO Y LIMPIAR TODO
-// ==================================
-
-document.addEventListener("DOMContentLoaded", function(){
-
-    const botonPedidoEnviado =
-        document.getElementById("pedidoEnviado");
-
-    if(!botonPedidoEnviado){
-        return;
-    }
-
-    botonPedidoEnviado.addEventListener("click", function(){
-
-        // ==============================
-        // 1. VACIAR CARRITO
-        // ==============================
-        registrarPedidoGoogleSheets();
-        vaciarCarrito();
-
-
-        // ==============================
-        // 2. LIMPIAR DADOS DO CLIENTE
-        // ==============================
-
-        const camposCliente = [
-            "nomeCliente",
-            "cepCliente",
-            "enderecoCliente",
-            "numeroCliente",
-            "bairroCliente",
-            "complementoCliente"
-        ];
-
-        camposCliente.forEach(function(id){
-
-            const campo =
-                document.getElementById(id);
-
-            if(campo){
-                campo.value = "";
-            }
-
-            localStorage.removeItem(id);
-
-        });
-
-
-        // ==============================
-        // 3. LIMPIAR TIPO DE ENTREGA
-        // ==============================
-
-        localStorage.removeItem("tipoEntrega");
-
-
-        // ==============================
-        // 4. DESMARCAR RETIRADA / DELIVERY
-        // ==============================
-
-        const retirada =
-            document.getElementById("retiradaLocal");
-
-        const delivery =
-            document.getElementById("delivery");
-
-        if(retirada){
-            retirada.classList.remove("selecionado");
-        }
-
-        if(delivery){
-            delivery.classList.remove("selecionado");
-        }
-
-
-        // ==============================
-        // 5. OCULTAR INFORMACIONES
-        // ==============================
-
-        const infoRetirada =
-            document.getElementById("infoRetirada");
-
-        const formDelivery =
-            document.getElementById("formDelivery");
-
-        if(infoRetirada){
-            infoRetirada.style.display = "none";
-        }
-
-        if(formDelivery){
-            formDelivery.style.display = "none";
-        }
-
-
-        // ==============================
-        // 6. ACTUALIZAR CARRITO VISUAL
-        // ==============================
-
-        if(typeof carregarCarrito === "function"){
-            carregarCarrito();
-        }
-
-        if(typeof actualizarContador === "function"){
-            actualizarContador();
-        }
-
-
-        // ==============================
-        // 7. CERRAR MODAL
-        // ==============================
 
         const modal =
             document.getElementById("modalPedido");
 
-        if(modal){
-            modal.style.display = "none";
-        }
+
+        const cancelar =
+            document.getElementById("cancelarModal");
 
 
-        // ==============================
-        // 8. VOLVER AL PASO 1
-        // ==============================
+        const abrirWhatsapp =
+            document.getElementById("abrirWhatsapp");
+
+
+        const pedidoEnviado =
+            document.getElementById("pedidoEnviado");
+
 
         const paso1 =
             document.getElementById("paso1");
 
+
         const paso2 =
             document.getElementById("paso2");
 
-        if(paso1){
-            paso1.style.display = "block";
+
+        // ==============================
+        // CANCELAR
+        // ==============================
+
+        if(cancelar){
+
+            cancelar.addEventListener(
+                "click",
+                function(){
+
+                    modal.style.display =
+                        "none";
+
+                }
+            );
+
         }
 
-        if(paso2){
-            paso2.style.display = "none";
+
+        // ==============================
+        // ABRIR WHATSAPP
+        // ==============================
+
+        if(abrirWhatsapp){
+
+            abrirWhatsapp.addEventListener(
+                "click",
+                function(){
+
+
+                    if(!window.mensagemPedido){
+
+                        alert(
+                            "Não foi possível preparar o pedido."
+                        );
+
+                        return;
+
+                    }
+
+
+                    const url =
+                        "https://wa.me/559684241554?text=" +
+                        encodeURIComponent(
+                            window.mensagemPedido
+                        );
+
+
+                    // Abrir WhatsApp
+
+                    window.open(
+                        url,
+                        "_blank"
+                    );
+
+
+                    // Ir para passo 2
+
+                    paso1.style.display =
+                        "none";
+
+
+                    paso2.style.display =
+                        "block";
+
+                }
+            );
+
         }
 
-    });
+
+        // ==============================
+        // BOTÃO OK
+        // ==============================
+
+        if(pedidoEnviado){
+
+            pedidoEnviado.addEventListener(
+                "click",
+                function(){
+
+
+                    // ==============================
+                    // REGISTRAR PEDIDO
+                    // ==============================
+
+                    registrarPedidoGoogleSheets();
+
+
+                    // ==============================
+                    // VACIAR CARRITO
+                    // ==============================
+
+                    vaciarCarrito();
+
+
+                    // ==============================
+                    // LIMPAR DADOS CLIENTE
+                    // ==============================
+
+                    const camposCliente = [
+
+                        "nomeCliente",
+                        "cepCliente",
+                        "enderecoCliente",
+                        "numeroCliente",
+                        "bairroCliente",
+                        "complementoCliente"
+
+                    ];
+
+
+                    camposCliente.forEach(
+                        function(id){
+
+                            const campo =
+                                document.getElementById(id);
+
+
+                            if(campo){
+
+                                campo.value = "";
+
+                            }
+
+
+                            localStorage.removeItem(id);
+
+                        }
+                    );
+
+
+                    localStorage.removeItem(
+                        "dadosCliente"
+                    );
+
+
+                    // ==============================
+                    // LIMPAR TIPO ENTREGA
+                    // ==============================
+
+                    localStorage.removeItem(
+                        "tipoEntrega"
+                    );
+
+
+                    // ==============================
+                    // DESMARCAR ENTREGA
+                    // ==============================
+
+                    const retirada =
+                        document.getElementById(
+                            "retiradaLocal"
+                        );
+
+
+                    const delivery =
+                        document.getElementById(
+                            "delivery"
+                        );
+
+
+                    if(retirada){
+
+                        retirada.classList.remove(
+                            "selecionado"
+                        );
+
+                    }
+
+
+                    if(delivery){
+
+                        delivery.classList.remove(
+                            "selecionado"
+                        );
+
+                    }
+
+
+                    // ==============================
+                    // OCULTAR INFORMAÇÕES
+                    // ==============================
+
+                    const infoRetirada =
+                        document.getElementById(
+                            "infoRetirada"
+                        );
+
+
+                    const formDelivery =
+                        document.getElementById(
+                            "formDelivery"
+                        );
+
+
+                    if(infoRetirada){
+
+                        infoRetirada.style.display =
+                            "none";
+
+                    }
+
+
+                    if(formDelivery){
+
+                        formDelivery.style.display =
+                            "none";
+
+                    }
+
+
+                    // ==============================
+                    // ATUALIZAR CARRINHO
+                    // ==============================
+
+                    if(
+                        typeof carregarCarrito ===
+                        "function"
+                    ){
+
+                        carregarCarrito();
+
+                    }
+
+
+                    if(
+                        typeof actualizarContador ===
+                        "function"
+                    ){
+
+                        actualizarContador();
+
+                    }
+
+
+                    // ==============================
+                    // FECHAR MODAL
+                    // ==============================
+
+                    if(modal){
+
+                        modal.style.display =
+                            "none";
+
+                    }
+
+
+                    // ==============================
+                    // VOLTAR PASSO 1
+                    // ==============================
+
+                    if(paso1){
+
+                        paso1.style.display =
+                            "block";
+
+                    }
+
+
+                    if(paso2){
+
+                        paso2.style.display =
+                            "none";
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+);
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const boton = document.getElementById("abrirWhatsapp");
+
+    console.log("BOTON WHATSAPP:", boton);
+
+    if(boton){
+
+        boton.addEventListener("click", function(){
+
+            console.log("BOTON WHATSAPP FUE PRESIONADO");
+
+        });
+
+    }
 
 });
+
 </script>
 
-<!-- ==================================
-     MODAL DE CONFIRMAÇÃO DO PEDIDO
-================================== -->
+<!-- ==============================
+     MODAL DO PEDIDO
+============================== -->
 
-<div class="modal-pedido" id="modalPedido">
+<div
+    id="modalPedido"
+    class="modal"
+    style="display: none;">
 
     <div class="modal-contenido">
+
 
         <!-- ==========================
              PASSO 1
@@ -2152,38 +2249,29 @@ document.addEventListener("DOMContentLoaded", function(){
 
         <div
             id="paso2"
-            style="display:none;">
+            style="display: none;">
 
             <div class="modal-icono">
                 ✅
             </div>
 
             <h2>
-                Pedido enviado
+                Pedido enviado com sucesso!
             </h2>
 
             <p>
-                Depois de enviar a mensagem no WhatsApp,
-                confirme para finalizar seu pedido.
+                Seu pedido foi enviado com sucesso pelo WhatsApp.
+                Obrigado pela preferência! ❤️
             </p>
 
             <div class="modal-botoes">
 
                 <button
                     type="button"
-                    id="volverCarrito"
-                    class="btn-cancelar">
-
-                    Voltar
-
-                </button>
-
-                <button
-                    type="button"
                     id="pedidoEnviado"
                     class="btn-confirmar">
 
-                    Pedido enviado
+                    OK
 
                 </button>
 
@@ -2191,9 +2279,11 @@ document.addEventListener("DOMContentLoaded", function(){
 
         </div>
 
+
     </div>
 
 </div>
+
 
 
 </body>
