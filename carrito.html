@@ -1359,7 +1359,6 @@ function pizzeriaEstaAberta(){
 
 }
 
-
 // ==================================
 // REGISTRAR PEDIDO NO GOOGLE SHEETS
 // ==================================
@@ -1369,7 +1368,13 @@ function registrarPedidoGoogleSheets(){
     const carrito = obtenerCarrito();
 
 
-    if(carrito.length === 0){
+    // ==============================
+    // VERIFICAR CARRINHO
+    // ==============================
+
+    if(!carrito || carrito.length === 0){
+
+        console.log("⚠️ Carrinho vazio. Pedido não registrado.");
 
         return;
 
@@ -1380,39 +1385,102 @@ function registrarPedidoGoogleSheets(){
     // DADOS DO CLIENTE
     // ==============================
 
-    const dados = {
+    const nome =
+        localStorage.getItem("nomeCliente") || "";
 
-        id: Date.now(),
+    const telefone =
+        localStorage.getItem("telefoneCliente") || "";
 
-        nome:
-            localStorage.getItem("nomeCliente") || "",
+    const cep =
+        localStorage.getItem("cepCliente") || "";
 
-        telefone:
-            localStorage.getItem("telefoneCliente") || "",
+    const endereco =
+        localStorage.getItem("enderecoCliente") || "";
 
-        cep:
-            localStorage.getItem("cepCliente") || "",
+    const numero =
+        localStorage.getItem("numeroCliente") || "";
 
-        endereco:
-            localStorage.getItem("enderecoCliente") || "",
+    const bairro =
+        localStorage.getItem("bairroCliente") || "";
 
-        numero:
-            localStorage.getItem("numeroCliente") || "",
+    const complemento =
+        localStorage.getItem("complementoCliente") || "";
 
-        bairro:
-            localStorage.getItem("bairroCliente") || "",
+    const entrega =
+        localStorage.getItem("tipoEntrega") || "";
 
-        complemento:
-            localStorage.getItem("complementoCliente") || "",
 
-        entrega:
-            localStorage.getItem("tipoEntrega") || "",
+    // ==============================
+    // FORMATAR ENTREGA
+    // ==============================
 
-        pedido: "",
+    let formaEntrega = "";
 
-        total: 0
+    if(entrega === "delivery"){
 
-    };
+        formaEntrega = "🛵 Delivery";
+
+    }
+
+    else if(entrega === "retirada"){
+
+        formaEntrega = "🏠 Retirar no local";
+
+    }
+
+    else{
+
+        formaEntrega = entrega;
+
+    }
+
+
+    // ==============================
+    // MONTAR ENDEREÇO
+    // ==============================
+
+    let enderecoCompleto = "";
+
+    if(endereco){
+
+        enderecoCompleto += endereco;
+
+    }
+
+    if(numero){
+
+        enderecoCompleto +=
+            " Nº " + numero;
+
+    }
+
+    if(complemento){
+
+        enderecoCompleto +=
+            " - " + complemento;
+
+    }
+
+
+    // ==============================
+    // BAIRRO
+    // ==============================
+
+    let bairroCompleto = bairro;
+
+
+    // Para Delivery podemos colocar
+    // o endereço junto do bairro,
+    // já que sua planilha não possui
+    // uma coluna separada para endereço.
+
+    if(entrega === "delivery" && enderecoCompleto){
+
+        bairroCompleto +=
+            " | Endereço: " +
+            enderecoCompleto;
+
+    }
 
 
     // ==============================
@@ -1420,51 +1488,111 @@ function registrarPedidoGoogleSheets(){
     // ==============================
 
     let pedido = "";
+
     let total = 0;
 
 
     carrito.forEach(function(produto){
 
+        const quantidade =
+            Number(produto.cantidad) || 0;
+
+        const preco =
+            Number(produto.precio) || 0;
+
+        const subtotal =
+            preco * quantidade;
+
+
         pedido +=
-            produto.cantidad +
+            quantidade +
             "x " +
             produto.nombre +
             " | R$ " +
-            (
-                produto.precio *
-                produto.cantidad
-            ).toFixed(2) +
+            subtotal.toFixed(2) +
             "\n";
 
 
-        total +=
-            produto.precio *
-            produto.cantidad;
+        total += subtotal;
 
     });
 
 
-    dados.pedido = pedido;
+    // ==============================
+    // ID DO PEDIDO
+    // ==============================
 
-    dados.total = total.toFixed(2);
+    const idPedido = Date.now();
 
 
     // ==============================
-    // GOOGLE SHEETS
+    // DATA E HORA
+    // ==============================
+
+    const dataHora =
+        new Date().toLocaleString(
+            "pt-BR"
+        );
+
+
+    // ==============================
+    // DADOS PARA GOOGLE SHEETS
+    // ==============================
+
+    const dados = {
+
+        id: idPedido,
+
+        dataHora: dataHora,
+
+        nome: nome,
+
+        telefone: telefone,
+
+        cep: cep,
+
+        bairro: bairroCompleto,
+
+        entrega: formaEntrega,
+
+        pedido: pedido,
+
+        total: total.toFixed(2)
+
+    };
+
+
+    console.log(
+        "📦 Dados enviados para Google Sheets:",
+        dados
+    );
+
+
+    // ==============================
+    // ENVIAR PARA GOOGLE SHEETS
     // ==============================
 
     fetch(
-    "https://script.google.com/macros/s/AKfycbwvWkR818LVsmEctYD5UBDCzML1V_-VP1ObqVmSuhdh0S2k6dmqtK3VLvH1r8GRtyAmhA/exec",
+        "https://script.google.com/macros/s/AKfycbwvWkR818LVsmEctYD5UBDCzML1V_-VP1ObqVmSuhdh0S2k6dmqtK3VLvH1r8GRtyAmhA/exec",
         {
 
             method: "POST",
 
             mode: "no-cors",
 
-            body: JSON.stringify(dados)
+            headers: {
+
+                "Content-Type":
+                    "text/plain;charset=utf-8"
+
+            },
+
+            body:
+                JSON.stringify(dados)
 
         }
     )
+
     .then(function(){
 
         console.log(
@@ -1472,17 +1600,17 @@ function registrarPedidoGoogleSheets(){
         );
 
     })
+
     .catch(function(error){
 
         console.error(
-            "❌ Erro enviando pedido para Google Sheets:",
+            "❌ Erro ao enviar pedido para Google Sheets:",
             error
         );
 
     });
 
 }
-
 
 // ==================================
 // ENVIAR PEDIDO
