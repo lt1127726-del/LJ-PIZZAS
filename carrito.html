@@ -915,24 +915,52 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 
-
+```javascript
 // ==================================
-// AUTOCOMPLETAR ENDEREÇO PELO CEP
+// AUTOCOMPLETAR DIRECCIÓN POR CEP
 // ==================================
 
-const campoCEP = document.getElementById("cepCliente");
+document.addEventListener("DOMContentLoaded", function(){
 
-if(campoCEP){
+    const campoCEP =
+        document.getElementById("cepCliente");
+
+    // Verificar que el campo exista
+    if(!campoCEP){
+
+        console.log(
+            "❌ No se encontró el campo cepCliente."
+        );
+
+        return;
+
+    }
+
+    console.log(
+        "✅ Autocompletado de CEP activado."
+    );
+
 
     campoCEP.addEventListener("input", function(){
 
-        // Deixar somente números
-        let cep = campoCEP.value.replace(/\D/g, "");
+        // ==================================
+        // DEJAR SOLAMENTE NÚMEROS
+        // ==================================
 
-        // Limitar a 8 números
-        cep = cep.substring(0, 8);
+        let cep =
+            campoCEP.value.replace(/\D/g, "");
 
-        // Formatar CEP: 00000-000
+
+        // Máximo 8 números
+
+        cep =
+            cep.substring(0, 8);
+
+
+        // ==================================
+        // FORMATO 00000-000
+        // ==================================
+
         if(cep.length > 5){
 
             cep =
@@ -942,71 +970,119 @@ if(campoCEP){
 
         }
 
+
         campoCEP.value = cep;
 
 
-        // Só consultar quando tiver 8 números
-        if(cep.replace(/\D/g, "").length !== 8){
-
-            return;
-
-        }
-
+        // ==================================
+        // OBTENER CEP SIN GUION
+        // ==================================
 
         const cepLimpo =
             cep.replace(/\D/g, "");
 
 
-        // Evitar CEPs inválidos como 00000000
-        if(/^(\d)\1{7}$/.test(cepLimpo)){
+        // Solo consultar cuando tenga 8 números
 
-            alert("⚠️ CEP inválido.");
+        if(cepLimpo.length !== 8){
 
             return;
 
         }
 
 
-        // Consultar ViaCEP
+        // ==================================
+        // VERIFICAR CEP INVÁLIDO
+        // ==================================
+
+        if(/^(\d)\1{7}$/.test(cepLimpo)){
+
+            alert(
+                "⚠️ CEP inválido."
+            );
+
+            return;
+
+        }
+
+
+        console.log(
+            "🔎 Consultando CEP:",
+            cepLimpo
+        );
+
+
+        // ==================================
+        // CONSULTAR VIACEP
+        // ==================================
+
         fetch(
             "https://viacep.com.br/ws/" +
             cepLimpo +
             "/json/"
         )
 
-        .then(function(resposta){
+        .then(function(respuesta){
 
-            return resposta.json();
+            if(!respuesta.ok){
+
+                throw new Error(
+                    "Error al consultar el CEP"
+                );
+
+            }
+
+            return respuesta.json();
 
         })
 
-        .then(function(dados){
+        .then(function(datos){
 
-            // CEP não encontrado
-            if(dados.erro){
+            console.log(
+                "📍 Datos del CEP:",
+                datos
+            );
 
-                alert("⚠️ CEP não encontrado.");
+
+            // ==================================
+            // CEP NO ENCONTRADO
+            // ==================================
+
+            if(datos.erro){
+
+                alert(
+                    "⚠️ CEP no encontrado."
+                );
 
                 return;
 
             }
 
 
-            // ==============================
-            // PREENCHER ENDEREÇO
-            // ==============================
+            // ==================================
+            // CAMPOS DEL FORMULARIO
+            // ==================================
 
             const endereco =
-                document.getElementById("enderecoCliente");
+                document.getElementById(
+                    "enderecoCliente"
+                );
 
             const bairro =
-                document.getElementById("bairroCliente");
+                document.getElementById(
+                    "bairroCliente"
+                );
 
+
+            // ==================================
+            // COMPLETAR DIRECCIÓN
+            // ==================================
 
             if(endereco){
 
                 endereco.value =
-                    dados.logradouro || "";
+                    datos.logradouro || "";
+
 
                 localStorage.setItem(
                     "enderecoCliente",
@@ -1016,10 +1092,15 @@ if(campoCEP){
             }
 
 
+            // ==================================
+            // COMPLETAR BARRIO
+            // ==================================
+
             if(bairro){
 
                 bairro.value =
-                    dados.bairro || "";
+                    datos.bairro || "";
+
 
                 localStorage.setItem(
                     "bairroCliente",
@@ -1028,20 +1109,41 @@ if(campoCEP){
 
             }
 
+
+            // ==================================
+            // GUARDAR CEP
+            // ==================================
+
+            localStorage.setItem(
+                "cepCliente",
+                campoCEP.value
+            );
+
+
+            console.log(
+                "✅ Dirección completada automáticamente."
+            );
+
         })
 
-        .catch(function(){
+        .catch(function(error){
+
+            console.error(
+                "❌ Error al consultar CEP:",
+                error
+            );
 
             alert(
-                "⚠️ Não foi possível consultar o CEP. " +
-                "Verifique sua conexão com a internet."
+                "⚠️ No fue posible consultar el CEP.\n\n" +
+                "Verifica tu conexión a internet."
             );
 
         });
 
     });
 
-}
+});
+```
 
 
 <script>

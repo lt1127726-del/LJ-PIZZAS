@@ -128,8 +128,3 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 
-
-console.log("===== PRUEBA =====");
-console.log(typeof agregarProducto);
-console.log(typeof eliminarProductoPorNombre);
-console.log("===== FIN =====");
