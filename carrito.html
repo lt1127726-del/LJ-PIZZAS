@@ -592,23 +592,25 @@ header{
     flex:1;
     padding:15px;
     background:#222;
-    color:#fff;
+    color:#ddd;
     border:2px solid #555;
     border-radius:12px;
     cursor:pointer;
     font-size:16px;
-    transition:.3s;
+    transition:.25s ease;
 }
 
 .opcao-entrega:hover{
-    border-color:#d4a017;
+    border-color:#777;
+    background:#252525;
 }
 
 .opcao-entrega.selecionado{
-    border-color:#d4a017;
-    background:#2b2b2b;
-    color:#FFD700;
-    box-shadow:0 0 15px rgba(212,160,23,.35);
+    background:#292929;
+    color:#f2c14e;
+    border:2px solid #c99a2e;
+    transform:translateY(-2px);
+    box-shadow:0 0 8px rgba(201,154,46,.22);
 }
 
 .info-entrega{
@@ -639,13 +641,6 @@ header{
     color:#aaa;
 }
 
-.opcao-entrega.selecionado{
-    background:#FFD54F;
-    color:#111;
-    border:2px solid #ff9800;
-    transform:scale(1.02);
-    box-shadow:0 0 12px rgba(255,152,0,.5);
-}
 </style>
 
 </head>
@@ -997,70 +992,61 @@ function menos(indice){
 
 carregarCarrito();
 </script>
-
-
-
-<div id="modalPedido" class="modal-pedido">
-
-    <div class="modal-contenido">
-
-        <!-- Paso 1 -->
-      <div id="paso1">
-
-    <div class="modal-icono">🍕</div>
-
-    <h2>Confirmar pedido</h2>
-
-    <p>
-        Seu pedido será aberto no WhatsApp.
-        <br><br>
-        Deseja continuar?
-    </p>
-
-    <div class="modal-botoes">
-
-        <button id="cancelarModal" class="btn-cancelar">
-            Cancelar
-        </button>
-
-        <button id="abrirWhatsapp" class="btn-confirmar">
-            Abrir WhatsApp
-        </button>
-
-    </div>
-
-</div>
-        <!-- Paso 2 -->
-        <div id="paso2" style="display:none;">
-
-    <div class="modal-icono">✅</div>
-
-    <h2>Pedido enviado</h2>
-
-    <p>
-        Depois de enviar a mensagem no WhatsApp,
-        confirme para finalizar seu pedido.
-    </p>
-
-    <div class="modal-botoes">
-
-        <button id="volverCarrito" class="btn-cancelar">
-            Voltar
-        </button>
-
-        <button id="pedidoEnviado" class="btn-confirmar">
-            Pedido enviado
-        </button>
-
-    </div>
-
-</div>
-
 <script>
-console.log("SCRIPT DEL CARRITO FUNCIONANDO");
+// ==================================
+// VERIFICAR HORARIO
+// ==================================
+
+function pizzeriaEstaAberta(){
+
+    const agora = new Date();
+
+    const dia = agora.getDay();
+    const hora = agora.getHours();
 
 
+    // Segunda-feira: fechado
+
+    if(dia === 1){
+        return false;
+    }
+
+
+    // Terça a sexta: 10h às 22h
+
+    if(dia >= 2 && dia <= 5){
+
+        return hora >= 10 && hora < 22;
+
+    }
+
+
+    // Sábado e domingo: 10h às 23h
+
+    if(dia === 0 || dia === 6){
+
+        return hora >= 10 && hora < 23;
+
+    }
+
+
+    return false;
+
+}
 function enviarWhatsApp(){
+    
+if(!pizzeriaEstaAberta()){
+
+        alert(
+            "🔒 No momento estamos fechados.\n\n" +
+            "⏰ Horário de funcionamento:\n" +
+            "Segunda-feira: fechado\n" +
+            "Terça a sexta: 10h às 22h\n" +
+            "Sábado e domingo: 10h às 23h"
+        );
+
+        return;
+    }
 
     const carrito = obtenerCarrito();
 
@@ -1224,22 +1210,343 @@ const dadosCliente = {
             "Complemento: " +
             (dadosCliente.complemento || "");
 
+}
+    // ==============================
+    // ABRIR WHATSAPP
+    // ==============================
+
+ 
+// ==============================
+// GUARDAR MENSAGEM E ABRIR MODAL
+// ==============================
+
+window.mensagemPedido = mensagem;
+
+abrirModalPedido();
+
+}
+
+// ==================================
+// ABRIR MODAL DE CONFIRMAÇÃO
+// ==================================
+
+function abrirModalPedido(){
+
+    const modal = document.getElementById("modalPedido");
+
+    if(modal){
+
+        modal.style.display = "flex";
+
     }
+
+}
+
+
+
+
+// ==================================
+// BOTÕES DO MODAL
+// ==================================
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const modal =
+        document.getElementById("modalPedido");
+
+    const cancelar =
+        document.getElementById("cancelarModal");
+
+    const abrirWhatsapp =
+        document.getElementById("abrirWhatsapp");
+
+    const paso1 =
+        document.getElementById("paso1");
+
+    const paso2 =
+        document.getElementById("paso2");
+
+
+    // ==============================
+    // CANCELAR
+    // ==============================
+
+    cancelar.addEventListener("click", function(){
+
+        modal.style.display = "none";
+
+    });
 
 
     // ==============================
     // ABRIR WHATSAPP
     // ==============================
 
-    const url =
-        "https://wa.me/559684241554?text=" +
-        encodeURIComponent(mensagem);
+    abrirWhatsapp.addEventListener("click", function(){
+
+        const url =
+            "https://wa.me/559684241554?text=" +
+            encodeURIComponent(
+                window.mensagemPedido
+            );
+
+        window.open(url, "_blank");
 
 
-    window.open(url, "_blank");
+        // Ir para o passo 2
 
-}
+        paso1.style.display = "none";
 
+        paso2.style.display = "block";
+
+    });
+
+});
+
+// ==================================
+// FINALIZAR PEDIDO Y LIMPIAR TODO
+// ==================================
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const botonPedidoEnviado =
+        document.getElementById("pedidoEnviado");
+
+    if(!botonPedidoEnviado){
+        return;
+    }
+
+    botonPedidoEnviado.addEventListener("click", function(){
+
+        // ==============================
+        // 1. VACIAR CARRITO
+        // ==============================
+
+        vaciarCarrito();
+
+
+        // ==============================
+        // 2. LIMPIAR DADOS DO CLIENTE
+        // ==============================
+
+        const camposCliente = [
+            "nomeCliente",
+            "cepCliente",
+            "enderecoCliente",
+            "numeroCliente",
+            "bairroCliente",
+            "complementoCliente"
+        ];
+
+        camposCliente.forEach(function(id){
+
+            const campo =
+                document.getElementById(id);
+
+            if(campo){
+                campo.value = "";
+            }
+
+            localStorage.removeItem(id);
+
+        });
+
+
+        // ==============================
+        // 3. LIMPIAR TIPO DE ENTREGA
+        // ==============================
+
+        localStorage.removeItem("tipoEntrega");
+
+
+        // ==============================
+        // 4. DESMARCAR RETIRADA / DELIVERY
+        // ==============================
+
+        const retirada =
+            document.getElementById("retiradaLocal");
+
+        const delivery =
+            document.getElementById("delivery");
+
+        if(retirada){
+            retirada.classList.remove("selecionado");
+        }
+
+        if(delivery){
+            delivery.classList.remove("selecionado");
+        }
+
+
+        // ==============================
+        // 5. OCULTAR INFORMACIONES
+        // ==============================
+
+        const infoRetirada =
+            document.getElementById("infoRetirada");
+
+        const formDelivery =
+            document.getElementById("formDelivery");
+
+        if(infoRetirada){
+            infoRetirada.style.display = "none";
+        }
+
+        if(formDelivery){
+            formDelivery.style.display = "none";
+        }
+
+
+        // ==============================
+        // 6. ACTUALIZAR CARRITO VISUAL
+        // ==============================
+
+        if(typeof carregarCarrito === "function"){
+            carregarCarrito();
+        }
+
+        if(typeof actualizarContador === "function"){
+            actualizarContador();
+        }
+
+
+        // ==============================
+        // 7. CERRAR MODAL
+        // ==============================
+
+        const modal =
+            document.getElementById("modalPedido");
+
+        if(modal){
+            modal.style.display = "none";
+        }
+
+
+        // ==============================
+        // 8. VOLVER AL PASO 1
+        // ==============================
+
+        const paso1 =
+            document.getElementById("paso1");
+
+        const paso2 =
+            document.getElementById("paso2");
+
+        if(paso1){
+            paso1.style.display = "block";
+        }
+
+        if(paso2){
+            paso2.style.display = "none";
+        }
+
+    });
+
+});
 </script>
+
+<!-- ==================================
+     MODAL DE CONFIRMAÇÃO DO PEDIDO
+================================== -->
+
+<div class="modal-pedido" id="modalPedido">
+
+    <div class="modal-contenido">
+
+        <!-- ==========================
+             PASSO 1
+        =========================== -->
+
+        <div id="paso1">
+
+            <div class="modal-icono">
+                🍕
+            </div>
+
+            <h2>
+                Confirmar pedido
+            </h2>
+
+            <p>
+                Seu pedido será aberto no WhatsApp.
+                <br><br>
+                Deseja continuar?
+            </p>
+
+            <div class="modal-botoes">
+
+                <button
+                    type="button"
+                    id="cancelarModal"
+                    class="btn-cancelar">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="button"
+                    id="abrirWhatsapp"
+                    class="btn-confirmar">
+
+                    📲 Abrir WhatsApp
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==========================
+             PASSO 2
+        =========================== -->
+
+        <div
+            id="paso2"
+            style="display:none;">
+
+            <div class="modal-icono">
+                ✅
+            </div>
+
+            <h2>
+                Pedido enviado
+            </h2>
+
+            <p>
+                Depois de enviar a mensagem no WhatsApp,
+                confirme para finalizar seu pedido.
+            </p>
+
+            <div class="modal-botoes">
+
+                <button
+                    type="button"
+                    id="volverCarrito"
+                    class="btn-cancelar">
+
+                    Voltar
+
+                </button>
+
+                <button
+                    type="button"
+                    id="pedidoEnviado"
+                    class="btn-confirmar">
+
+                    Pedido enviado
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 </body>
 </html>
