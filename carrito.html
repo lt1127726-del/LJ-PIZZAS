@@ -1279,6 +1279,120 @@ if(!pizzeriaEstaAberta()){
     
 function enviarWhatsApp(){
 
+function registrarPedidoGoogleSheets(){
+
+    const carrito = obtenerCarrito();
+
+    if(carrito.length === 0){
+        return;
+    }
+
+
+    // ==============================
+    // DATOS DEL CLIENTE
+    // ==============================
+
+    const dados = {
+
+        id: Date.now(),
+
+        nome:
+            localStorage.getItem("nomeCliente") || "",
+
+        telefone:
+            localStorage.getItem("telefoneCliente") || "",
+
+        cep:
+            localStorage.getItem("cepCliente") || "",
+
+        endereco:
+            localStorage.getItem("enderecoCliente") || "",
+
+        numero:
+            localStorage.getItem("numeroCliente") || "",
+
+        bairro:
+            localStorage.getItem("bairroCliente") || "",
+
+        complemento:
+            localStorage.getItem("complementoCliente") || "",
+
+        entrega:
+            localStorage.getItem("tipoEntrega") || "",
+
+        pedido: "",
+
+        total: 0
+
+    };
+
+
+    // ==============================
+    // CREAR LISTA DEL PEDIDO
+    // ==============================
+
+    let pedido = "";
+    let total = 0;
+
+
+    carrito.forEach(function(produto){
+
+        pedido +=
+            produto.cantidad +
+            "x " +
+            produto.nombre +
+            " | R$ " +
+            (produto.precio * produto.cantidad).toFixed(2) +
+            "\n";
+
+
+        total +=
+            produto.precio *
+            produto.cantidad;
+
+    });
+
+
+    dados.pedido = pedido;
+    dados.total = total.toFixed(2);
+
+
+    // ==============================
+    // ENVIAR A GOOGLE SHEETS
+    // ==============================
+
+    fetch(
+        "https://script.google.com/macros/s/AKfycbwc3_zNS_0ZLvBZttviqmJ9Hfgu8vWtNrANJR0h4vXOerbYSvE7SlD6KzL8nBFvKVakUA/exec",
+        {
+
+            method: "POST",
+
+            mode: "no-cors",
+
+            body: JSON.stringify(dados)
+
+        }
+    )
+
+    .then(function(){
+
+        console.log(
+            "✅ Pedido enviado para Google Sheets."
+        );
+
+    })
+
+    .catch(function(error){
+
+        console.error(
+            "❌ Error enviando pedido a Google Sheets:",
+            error
+        );
+
+    });
+
+}
+
     // ==================================
     // VERIFICAR HORARIO
     // ==================================
@@ -1855,7 +1969,7 @@ document.addEventListener("DOMContentLoaded", function(){
         // ==============================
         // 1. VACIAR CARRITO
         // ==============================
-
+        registrarPedidoGoogleSheets();
         vaciarCarrito();
 
 
