@@ -914,6 +914,136 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 </script>
+
+
+// ==================================
+// AUTOCOMPLETAR ENDEREÇO PELO CEP
+// ==================================
+
+const campoCEP = document.getElementById("cepCliente");
+
+if(campoCEP){
+
+    campoCEP.addEventListener("input", function(){
+
+        // Deixar somente números
+        let cep = campoCEP.value.replace(/\D/g, "");
+
+        // Limitar a 8 números
+        cep = cep.substring(0, 8);
+
+        // Formatar CEP: 00000-000
+        if(cep.length > 5){
+
+            cep =
+                cep.substring(0, 5) +
+                "-" +
+                cep.substring(5);
+
+        }
+
+        campoCEP.value = cep;
+
+
+        // Só consultar quando tiver 8 números
+        if(cep.replace(/\D/g, "").length !== 8){
+
+            return;
+
+        }
+
+
+        const cepLimpo =
+            cep.replace(/\D/g, "");
+
+
+        // Evitar CEPs inválidos como 00000000
+        if(/^(\d)\1{7}$/.test(cepLimpo)){
+
+            alert("⚠️ CEP inválido.");
+
+            return;
+
+        }
+
+
+        // Consultar ViaCEP
+        fetch(
+            "https://viacep.com.br/ws/" +
+            cepLimpo +
+            "/json/"
+        )
+
+        .then(function(resposta){
+
+            return resposta.json();
+
+        })
+
+        .then(function(dados){
+
+            // CEP não encontrado
+            if(dados.erro){
+
+                alert("⚠️ CEP não encontrado.");
+
+                return;
+
+            }
+
+
+            // ==============================
+            // PREENCHER ENDEREÇO
+            // ==============================
+
+            const endereco =
+                document.getElementById("enderecoCliente");
+
+            const bairro =
+                document.getElementById("bairroCliente");
+
+
+            if(endereco){
+
+                endereco.value =
+                    dados.logradouro || "";
+
+                localStorage.setItem(
+                    "enderecoCliente",
+                    endereco.value
+                );
+
+            }
+
+
+            if(bairro){
+
+                bairro.value =
+                    dados.bairro || "";
+
+                localStorage.setItem(
+                    "bairroCliente",
+                    bairro.value
+                );
+
+            }
+
+        })
+
+        .catch(function(){
+
+            alert(
+                "⚠️ Não foi possível consultar o CEP. " +
+                "Verifique sua conexão com a internet."
+            );
+
+        });
+
+    });
+
+}
+
+
 <script>
 
 const listaProdutos = document.getElementById("listaProdutos");
@@ -1047,6 +1177,311 @@ if(!pizzeriaEstaAberta()){
 
         return;
     }
+    
+function enviarWhatsApp(){
+
+    // ==================================
+    // VERIFICAR HORARIO
+    // ==================================
+
+    if(!pizzeriaEstaAberta()){
+
+        alert(
+            "🔒 No momento estamos fechados.\n\n" +
+            "⏰ Horário de funcionamento:\n" +
+            "Segunda-feira: fechado\n" +
+            "Terça a sexta: 10h às 22h\n" +
+            "Sábado e domingo: 10h às 23h"
+        );
+
+        return;
+    }
+
+
+    // ==================================
+    // VERIFICAR CARRINHO
+    // ==================================
+
+    const carrito = obtenerCarrito();
+
+    if(carrito.length === 0){
+
+        alert("Seu carrinho está vazio.");
+
+        return;
+    }
+
+
+    // ==================================
+    // VERIFICAR FORMA DE ENTREGA
+    // ==================================
+
+    const tipoEntrega =
+        localStorage.getItem("tipoEntrega");
+
+
+    if(!tipoEntrega){
+
+        alert(
+            "⚠️ Por favor, selecione como deseja receber seu pedido."
+        );
+
+        return;
+    }
+
+
+    // ==================================
+    // VALIDAR DADOS DO DELIVERY
+    // ==================================
+
+    if(tipoEntrega === "delivery"){
+
+        const nome =
+            localStorage.getItem("nomeCliente") || "";
+
+        const cep =
+            localStorage.getItem("cepCliente") || "";
+
+        const endereco =
+            localStorage.getItem("enderecoCliente") || "";
+
+        const numero =
+            localStorage.getItem("numeroCliente") || "";
+
+        const bairro =
+            localStorage.getItem("bairroCliente") || "";
+
+
+        if(!nome.trim()){
+
+            alert(
+                "⚠️ Por favor, informe seu nome."
+            );
+
+            document.getElementById("nomeCliente")?.focus();
+
+            return;
+        }
+
+
+        if(!cep.trim()){
+
+            alert(
+                "⚠️ Por favor, informe seu CEP."
+            );
+
+            document.getElementById("cepCliente")?.focus();
+
+            return;
+        }
+
+
+        if(!endereco.trim()){
+
+            alert(
+                "⚠️ Por favor, informe seu endereço."
+            );
+
+            document.getElementById("enderecoCliente")?.focus();
+
+            return;
+        }
+
+
+        if(!numero.trim()){
+
+            alert(
+                "⚠️ Por favor, informe o número do endereço."
+            );
+
+            document.getElementById("numeroCliente")?.focus();
+
+            return;
+        }
+
+
+        if(!bairro.trim()){
+
+            alert(
+                "⚠️ Por favor, informe seu bairro."
+            );
+
+            document.getElementById("bairroCliente")?.focus();
+
+            return;
+        }
+
+    }
+
+
+    // ==================================
+    // FORMA DE ENTREGA
+    // ==================================
+
+    let formaEntrega = "Não informado";
+
+
+    if(tipoEntrega === "delivery"){
+
+        formaEntrega = "🛵 Delivery";
+
+    }
+
+
+    if(tipoEntrega === "retirada"){
+
+        formaEntrega = "🏠 Retirar no local";
+
+    }
+
+
+    // ==================================
+    // DADOS DO CLIENTE
+    // ==================================
+
+    const dadosCliente = {
+
+        nome:
+            localStorage.getItem("nomeCliente") || "",
+
+        cep:
+            localStorage.getItem("cepCliente") || "",
+
+        endereco:
+            localStorage.getItem("enderecoCliente") || "",
+
+        numero:
+            localStorage.getItem("numeroCliente") || "",
+
+        bairro:
+            localStorage.getItem("bairroCliente") || "",
+
+        complemento:
+            localStorage.getItem("complementoCliente") || ""
+
+    };
+
+
+    // ==================================
+    // CRIAR MENSAGEM
+    // ==================================
+
+    let mensagem =
+        "🍕 *NOVO PEDIDO - LJ PIZZAS*\n\n";
+
+
+    let total = 0;
+
+    let itens = 0;
+
+
+    carrito.forEach(produto => {
+
+        mensagem +=
+            produto.cantidad +
+            "x " +
+            produto.nombre +
+            "\n";
+
+        mensagem +=
+            "R$ " +
+            (produto.precio * produto.cantidad).toFixed(2) +
+            "\n\n";
+
+
+        total +=
+            produto.precio *
+            produto.cantidad;
+
+
+        itens +=
+            produto.cantidad;
+
+    });
+
+
+    mensagem +=
+        "----------------------------\n";
+
+
+    mensagem +=
+        "🛒 Total de itens: " +
+        itens +
+        "\n";
+
+
+    mensagem +=
+        "💰 Total: R$ " +
+        total.toFixed(2) +
+        "\n\n";
+
+
+    // ==================================
+    // FORMA DE ENTREGA
+    // ==================================
+
+    mensagem +=
+        "📦 *Forma de entrega:*\n" +
+        formaEntrega +
+        "\n\n";
+
+
+    // ==================================
+    // DADOS DO DELIVERY
+    // ==================================
+
+    if(tipoEntrega === "delivery"){
+
+        mensagem +=
+            "👤 *Dados do cliente:*\n";
+
+        mensagem +=
+            "Nome: " +
+            dadosCliente.nome +
+            "\n";
+
+        mensagem +=
+            "CEP: " +
+            dadosCliente.cep +
+            "\n";
+
+        mensagem +=
+            "Endereço: " +
+            dadosCliente.endereco +
+            "\n";
+
+        mensagem +=
+            "Número: " +
+            dadosCliente.numero +
+            "\n";
+
+        mensagem +=
+            "Bairro: " +
+            dadosCliente.bairro +
+            "\n";
+
+        mensagem +=
+            "Complemento: " +
+            dadosCliente.complemento;
+
+    }
+
+
+    // ==================================
+    // GUARDAR MENSAGEM
+    // ==================================
+
+    window.mensagemPedido = mensagem;
+
+
+    // ==================================
+    // ABRIR MODAL
+    // ==================================
+
+    abrirModalPedido();
+
+}
+
 
     const carrito = obtenerCarrito();
 
