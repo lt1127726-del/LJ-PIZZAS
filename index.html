@@ -981,12 +981,8 @@ if(this.classList.contains("ativo")){
 
     this.classList.remove("ativo");
 
-    eliminarTamanho(producto.nombre);
-
     eliminarProductoPorNombre(producto.nombre);
     
-    
-
 }else{
 
     const grupo = card.querySelectorAll(".tamanho");
@@ -994,8 +990,6 @@ if(this.classList.contains("ativo")){
     grupo.forEach(item=>item.classList.remove("ativo"));
 
     this.classList.add("ativo");
-    
-    guardarTamanho(producto.nombre);
 
     const productos = obtenerCarrito();
 
@@ -1010,12 +1004,12 @@ if(this.classList.contains("ativo")){
     });
 
     agregarProducto(producto);
-
+    
+    animarProducto(card);
 }
 
 actualizarContador();
 
-animarProducto(card);
     });
 
 });
@@ -1093,88 +1087,6 @@ function guardarSeleccion(nombre){
 
 }
 
-function guardarTamanho(nombre){
-
-    let tamanhos = JSON.parse(
-        localStorage.getItem("tamanhos")
-    ) || [];
-
-    if(!tamanhos.includes(nombre)){
-
-        tamanhos.push(nombre);
-
-    }
-
-    localStorage.setItem(
-        "tamanhos",
-        JSON.stringify(tamanhos)
-    );
-
-}
-document.addEventListener("DOMContentLoaded", function(){
-
-    const carrito = obtenerCarrito();
-
-    const tarjetas = document.querySelectorAll(".card");
-
-    tarjetas.forEach(card => {
-
-        const nombre =
-            card.querySelector("h3")?.textContent.trim();
-
-        if(!nombre){
-            return;
-        }
-
-        // ==============================
-        // LIMPIAR SELECCIÓN VISUAL
-        // ==============================
-
-        card.classList.remove("seleccionada");
-
-        const tamanhos =
-            card.querySelectorAll(".tamanho");
-
-        tamanhos.forEach(tamanho => {
-
-            tamanho.classList.remove("ativo");
-
-        });
-
-
-        // ==============================
-        // VERIFICAR CARRITO
-        // ==============================
-
-        const produtoSelecionado =
-            carrito.find(produto =>
-                produto.nombre === nome
-            );
-
-        if(produtoSelecionado){
-
-            // Si es una pizza con tamaño
-            tamanhos.forEach(tamanho => {
-
-                const texto =
-                    tamanho.textContent.trim();
-
-                if(
-                    produtoSelecionado.nombre ===
-                    nombre + " - " + texto
-                ){
-
-                    tamanho.classList.add("ativo");
-
-                }
-
-            });
-
-        }
-
-    });
-
-});
 function eliminarSeleccion(nombre){
 
     let seleccionadas = JSON.parse(
@@ -1268,44 +1180,7 @@ function animarProducto(card){
     },700);
 
 }
-
-function guardarTamanho(nombre){
-
-    let tamanhos = JSON.parse(
-        localStorage.getItem("tamanhos")
-    ) || [];
-
-    if(!tamanhos.includes(nombre)){
-
-        tamanhos.push(nombre);
-
-    }
-
-    localStorage.setItem(
-        "tamanhos",
-        JSON.stringify(tamanhos)
-    );
-
-}
-
-
-function eliminarTamanho(nombre){
-
-    let tamanhos = JSON.parse(
-        localStorage.getItem("tamanhos")
-    ) || [];
-
-    tamanhos = tamanhos.filter(
-        item => item !== nombre
-    );
-
-    localStorage.setItem(
-        "tamanhos",
-        JSON.stringify(tamanhos)
-    );
-
-}
-
+     
 function abrirCarrito(){
 
     window.location.href = "carrito.html";
@@ -1325,6 +1200,74 @@ linkInformacoes.addEventListener("click", function(){
 
 });
 
+// ==========================================
+// RECUPERAR SELECCIONES VISUALES DEL CARRITO
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const carrito = obtenerCarrito();
+
+    document.querySelectorAll(".card").forEach(function(card){
+
+        const titulo = card.querySelector("h3");
+
+        if(!titulo){
+            return;
+        }
+
+        const nombre = titulo.textContent.trim();
+
+        // ==================================
+        // PRODUCTOS SIN TAMANHO
+        // ==================================
+
+        const productoNormal = carrito.find(function(produto){
+
+            return produto.nombre === nombre;
+
+        });
+
+        if(productoNormal){
+
+            card.classList.add("seleccionada");
+
+        }
+
+
+        // ==================================
+        // PRODUCTOS CON TAMANHO
+        // ==================================
+
+        const botonesTamanho =
+            card.querySelectorAll(".tamanho");
+
+        botonesTamanho.forEach(function(btn){
+
+            const texto =
+                btn.textContent.trim();
+
+            const nombreCompleto =
+                nombre + " - " + texto;
+
+            const produtoTamanho =
+                carrito.find(function(produto){
+
+                    return produto.nombre === nombreCompleto;
+
+                });
+
+            if(produtoTamanho){
+
+                btn.classList.add("ativo");
+
+            }
+
+        });
+
+    });
+
+});
 </script>
 
 </script>
