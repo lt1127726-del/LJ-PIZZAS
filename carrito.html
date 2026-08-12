@@ -1360,6 +1360,163 @@ function pizzeriaEstaAberta(){
     return false;
 
 }
+
+// ==================================
+// REGISTRAR PEDIDO EN GOOGLE SHEETS
+// ==================================
+
+function registrarPedidoGoogleSheets(){
+
+    const carrito =
+        obtenerCarrito();
+
+    if(!carrito || carrito.length === 0){
+
+        console.log(
+            "⚠️ No hay productos para registrar."
+        );
+
+        return;
+
+    }
+
+
+    // ==============================
+    // DATOS DEL CLIENTE
+    // ==============================
+
+    const nome =
+        localStorage.getItem("nomeCliente") || "";
+
+    const cep =
+        localStorage.getItem("cepCliente") || "";
+
+    const bairro =
+        localStorage.getItem("bairroCliente") || "";
+
+    const tipoEntrega =
+        localStorage.getItem("tipoEntrega") || "";
+
+
+    // ==============================
+    // FORMA DE ENTREGA
+    // ==============================
+
+    let entrega =
+        "Não informado";
+
+
+    if(tipoEntrega === "delivery"){
+
+        entrega =
+            "Delivery";
+
+    }
+
+
+    if(tipoEntrega === "retirada"){
+
+        entrega =
+            "Retirar no local";
+
+    }
+
+
+    // ==============================
+    // CREAR PEDIDO
+    // ==============================
+
+    let pedido = "";
+
+    let total = 0;
+
+
+    carrito.forEach(function(produto){
+
+        const subtotal =
+            produto.precio *
+            produto.cantidad;
+
+
+        pedido +=
+            produto.cantidad +
+            "x " +
+            produto.nombre +
+            " - R$ " +
+            subtotal.toFixed(2) +
+            "\n";
+
+
+        total +=
+            subtotal;
+
+    });
+
+
+    // ==============================
+    // DATOS PARA GOOGLE SHEETS
+    // ==============================
+
+    const dados = {
+
+        nome: nome,
+
+        telefone: "",
+
+        cep: cep,
+
+        barrio: bairro,
+
+        entrega: entrega,
+
+        pedido: pedido,
+
+        total:
+            "R$ " +
+            total.toFixed(2)
+
+    };
+
+
+    // ==============================
+    // ENVIAR PARA GOOGLE SHEETS
+    // ==============================
+
+    fetch(
+        "https://script.google.com/macros/s/AKfycbwc3_zNS_0ZLvBZttviqmJ9Hfgu8vWtNrANJR0h4vXOerbYSvE7SlD6KzL8nBFvKVakUA/exec",
+        {
+
+            method: "POST",
+
+            mode: "no-cors",
+
+            headers: {
+                "Content-Type":
+                    "text/plain;charset=utf-8"
+            },
+
+            body:
+                JSON.stringify(dados)
+
+        }
+    )
+    .then(function(){
+
+        console.log(
+            "✅ Pedido enviado para Google Sheets."
+        );
+
+    })
+    .catch(function(error){
+
+        console.error(
+            "❌ Erro ao registrar pedido:",
+            error
+        );
+
+    });
+
+}
 // ==================================
 // ENVIAR PEDIDO
 // ==================================
