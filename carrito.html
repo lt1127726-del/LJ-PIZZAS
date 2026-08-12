@@ -433,7 +433,7 @@ header{
 
 }
 
-```css
+
 /*==================================
     MODAL PEDIDO
 ===================================*/
@@ -662,7 +662,7 @@ header{
     }
 
 }
-```
+
 
 
 .tipo-entrega{
@@ -886,9 +886,12 @@ onclick="window.location.href='index.html'">
 
 </button>
 
-<button class="botao whatsapp" onclick="enviarWhatsApp()">
+<button
+    type="button"
+    class="botao whatsapp"
+    onclick="enviarWhatsApp()">
 
-📲 Pedido pelo WhatsApp
+    📲 Pedido pelo WhatsApp
 
 </button>
 
@@ -1315,9 +1318,8 @@ function menos(indice){
 carregarCarrito();
 </script>
 <script>
-
 // ==================================
-// VERIFICAR HORARIO
+// VERIFICAR HORARIO DA PIZZARIA
 // ==================================
 
 function pizzeriaEstaAberta(){
@@ -1358,269 +1360,14 @@ function pizzeriaEstaAberta(){
     return false;
 
 }
-
-// ==================================
-// REGISTRAR PEDIDO NO GOOGLE SHEETS
-// ==================================
-
-function registrarPedidoGoogleSheets(){
-
-    const carrito = obtenerCarrito();
-
-
-    // ==============================
-    // VERIFICAR CARRINHO
-    // ==============================
-
-    if(!carrito || carrito.length === 0){
-
-        console.log("⚠️ Carrinho vazio. Pedido não registrado.");
-
-        return;
-
-    }
-
-
-    // ==============================
-    // DADOS DO CLIENTE
-    // ==============================
-
-    const nome =
-        localStorage.getItem("nomeCliente") || "";
-
-    const telefone =
-        localStorage.getItem("telefoneCliente") || "";
-
-    const cep =
-        localStorage.getItem("cepCliente") || "";
-
-    const endereco =
-        localStorage.getItem("enderecoCliente") || "";
-
-    const numero =
-        localStorage.getItem("numeroCliente") || "";
-
-    const bairro =
-        localStorage.getItem("bairroCliente") || "";
-
-    const complemento =
-        localStorage.getItem("complementoCliente") || "";
-
-    const entrega =
-        localStorage.getItem("tipoEntrega") || "";
-
-
-    // ==============================
-    // FORMATAR ENTREGA
-    // ==============================
-
-    let formaEntrega = "";
-
-    if(entrega === "delivery"){
-
-        formaEntrega = "🛵 Delivery";
-
-    }
-
-    else if(entrega === "retirada"){
-
-        formaEntrega = "🏠 Retirar no local";
-
-    }
-
-    else{
-
-        formaEntrega = entrega;
-
-    }
-
-
-    // ==============================
-    // MONTAR ENDEREÇO
-    // ==============================
-
-    let enderecoCompleto = "";
-
-    if(endereco){
-
-        enderecoCompleto += endereco;
-
-    }
-
-    if(numero){
-
-        enderecoCompleto +=
-            " Nº " + numero;
-
-    }
-
-    if(complemento){
-
-        enderecoCompleto +=
-            " - " + complemento;
-
-    }
-
-
-    // ==============================
-    // BAIRRO
-    // ==============================
-
-    let bairroCompleto = bairro;
-
-
-    // Para Delivery podemos colocar
-    // o endereço junto do bairro,
-    // já que sua planilha não possui
-    // uma coluna separada para endereço.
-
-    if(entrega === "delivery" && enderecoCompleto){
-
-        bairroCompleto +=
-            " | Endereço: " +
-            enderecoCompleto;
-
-    }
-
-
-    // ==============================
-    // CRIAR PEDIDO
-    // ==============================
-
-    let pedido = "";
-
-    let total = 0;
-
-
-    carrito.forEach(function(produto){
-
-        const quantidade =
-            Number(produto.cantidad) || 0;
-
-        const preco =
-            Number(produto.precio) || 0;
-
-        const subtotal =
-            preco * quantidade;
-
-
-        pedido +=
-            quantidade +
-            "x " +
-            produto.nombre +
-            " | R$ " +
-            subtotal.toFixed(2) +
-            "\n";
-
-
-        total += subtotal;
-
-    });
-
-
-    // ==============================
-    // ID DO PEDIDO
-    // ==============================
-
-    const idPedido = Date.now();
-
-
-    // ==============================
-    // DATA E HORA
-    // ==============================
-
-    const dataHora =
-        new Date().toLocaleString(
-            "pt-BR"
-        );
-
-
-    // ==============================
-    // DADOS PARA GOOGLE SHEETS
-    // ==============================
-
-    const dados = {
-
-        id: idPedido,
-
-        dataHora: dataHora,
-
-        nome: nome,
-
-        telefone: telefone,
-
-        cep: cep,
-
-        bairro: bairroCompleto,
-
-        entrega: formaEntrega,
-
-        pedido: pedido,
-
-        total: total.toFixed(2)
-
-    };
-
-
-    console.log(
-        "📦 Dados enviados para Google Sheets:",
-        dados
-    );
-
-
-    // ==============================
-    // ENVIAR PARA GOOGLE SHEETS
-    // ==============================
-
-    fetch(
-        "https://script.google.com/macros/s/AKfycbwvWkR818LVsmEctYD5UBDCzML1V_-VP1ObqVmSuhdh0S2k6dmqtK3VLvH1r8GRtyAmhA/exec",
-        {
-
-            method: "POST",
-
-            mode: "no-cors",
-
-            headers: {
-
-                "Content-Type":
-                    "text/plain;charset=utf-8"
-
-            },
-
-            body:
-                JSON.stringify(dados)
-
-        }
-    )
-
-    .then(function(){
-
-        console.log(
-            "✅ Pedido enviado para Google Sheets."
-        );
-
-    })
-
-    .catch(function(error){
-
-        console.error(
-            "❌ Erro ao enviar pedido para Google Sheets:",
-            error
-        );
-
-    });
-
-}
-
 // ==================================
 // ENVIAR PEDIDO
 // ==================================
 
 function enviarWhatsApp(){
 
-
     // ==============================
-    // VERIFICAR HORÁRIO
+    // VERIFICAR HORARIO
     // ==============================
 
     if(!pizzeriaEstaAberta()){
@@ -1644,8 +1391,7 @@ function enviarWhatsApp(){
 
     const carrito = obtenerCarrito();
 
-
-    if(carrito.length === 0){
+    if(!carrito || carrito.length === 0){
 
         alert(
             "Seu carrinho está vazio."
@@ -1657,12 +1403,11 @@ function enviarWhatsApp(){
 
 
     // ==============================
-    // TIPO DE ENTREGA
+    // VERIFICAR TIPO DE ENTREGA
     // ==============================
 
     const tipoEntrega =
         localStorage.getItem("tipoEntrega");
-
 
     if(!tipoEntrega){
 
@@ -1832,9 +1577,7 @@ function enviarWhatsApp(){
     let mensagem =
         "🍕 *NOVO PEDIDO - LJ PIZZAS*\n\n";
 
-
     let total = 0;
-
     let itens = 0;
 
 
@@ -1846,7 +1589,6 @@ function enviarWhatsApp(){
             produto.nombre +
             "\n";
 
-
         mensagem +=
             "R$ " +
             (
@@ -1855,11 +1597,9 @@ function enviarWhatsApp(){
             ).toFixed(2) +
             "\n\n";
 
-
         total +=
             produto.precio *
             produto.cantidad;
-
 
         itens +=
             produto.cantidad;
@@ -1870,12 +1610,10 @@ function enviarWhatsApp(){
     mensagem +=
         "----------------------------\n";
 
-
     mensagem +=
         "🛒 Total de itens: " +
         itens +
         "\n";
-
 
     mensagem +=
         "💰 Total: R$ " +
@@ -1902,36 +1640,30 @@ function enviarWhatsApp(){
         mensagem +=
             "👤 *Dados do cliente:*\n";
 
-
         mensagem +=
             "Nome: " +
             dadosCliente.nome +
             "\n";
-
 
         mensagem +=
             "CEP: " +
             dadosCliente.cep +
             "\n";
 
-
         mensagem +=
             "Endereço: " +
             dadosCliente.endereco +
             "\n";
-
 
         mensagem +=
             "Número: " +
             dadosCliente.numero +
             "\n";
 
-
         mensagem +=
             "Bairro: " +
             dadosCliente.bairro +
             "\n";
-
 
         mensagem +=
             "Complemento: " +
@@ -1944,8 +1676,7 @@ function enviarWhatsApp(){
     // GUARDAR MENSAGEM
     // ==============================
 
-    window.mensagemPedido =
-        mensagem;
+    window.mensagemPedido = mensagem;
 
 
     // ==============================
@@ -1957,10 +1688,10 @@ function enviarWhatsApp(){
 }
 
 
+
 // ==================================
 // ABRIR MODAL
 // ==================================
-
 function abrirModalPedido(){
 
     const modal =
@@ -1985,7 +1716,6 @@ function abrirModalPedido(){
 
 }
 
-
 // ==================================
 // BOTÕES DO MODAL
 // ==================================
@@ -1994,26 +1724,20 @@ document.addEventListener(
     "DOMContentLoaded",
     function(){
 
-
         const modal =
             document.getElementById("modalPedido");
-
 
         const cancelar =
             document.getElementById("cancelarModal");
 
-
         const abrirWhatsapp =
             document.getElementById("abrirWhatsapp");
-
 
         const pedidoEnviado =
             document.getElementById("pedidoEnviado");
 
-
         const paso1 =
             document.getElementById("paso1");
-
 
         const paso2 =
             document.getElementById("paso2");
@@ -2029,8 +1753,11 @@ document.addEventListener(
                 "click",
                 function(){
 
-                    modal.style.display =
-                        "none";
+                    if(modal){
+
+                        modal.style.display = "none";
+
+                    }
 
                 }
             );
@@ -2047,7 +1774,6 @@ document.addEventListener(
             abrirWhatsapp.addEventListener(
                 "click",
                 function(){
-
 
                     if(!window.mensagemPedido){
 
@@ -2075,14 +1801,23 @@ document.addEventListener(
                     );
 
 
-                    // Ir para passo 2
+                    // ==============================
+                    // IR PARA PASSO 2
+                    // ==============================
 
-                    paso1.style.display =
-                        "none";
+                    if(paso1){
 
+                        paso1.style.display =
+                            "none";
 
-                    paso2.style.display =
-                        "block";
+                    }
+
+                    if(paso2){
+
+                        paso2.style.display =
+                            "block";
+
+                    }
 
                 }
             );
@@ -2100,7 +1835,6 @@ document.addEventListener(
                 "click",
                 function(){
 
-
                     // ==============================
                     // REGISTRAR PEDIDO
                     // ==============================
@@ -2109,7 +1843,7 @@ document.addEventListener(
 
 
                     // ==============================
-                    // VACIAR CARRITO
+                    // VACIAR CARRINHO
                     // ==============================
 
                     vaciarCarrito();
@@ -2137,13 +1871,11 @@ document.addEventListener(
                             const campo =
                                 document.getElementById(id);
 
-
                             if(campo){
 
                                 campo.value = "";
 
                             }
-
 
                             localStorage.removeItem(id);
 
@@ -2151,13 +1883,17 @@ document.addEventListener(
                     );
 
 
+                    // ==============================
+                    // LIMPAR DADOS ANTIGOS
+                    // ==============================
+
                     localStorage.removeItem(
                         "dadosCliente"
                     );
 
 
                     // ==============================
-                    // LIMPAR TIPO ENTREGA
+                    // LIMPAR TIPO DE ENTREGA
                     // ==============================
 
                     localStorage.removeItem(
@@ -2166,20 +1902,13 @@ document.addEventListener(
 
 
                     // ==============================
-                    // DESMARCAR ENTREGA
+                    // DESMARCAR RETIRADA
                     // ==============================
 
                     const retirada =
                         document.getElementById(
                             "retiradaLocal"
                         );
-
-
-                    const delivery =
-                        document.getElementById(
-                            "delivery"
-                        );
-
 
                     if(retirada){
 
@@ -2189,6 +1918,15 @@ document.addEventListener(
 
                     }
 
+
+                    // ==============================
+                    // DESMARCAR DELIVERY
+                    // ==============================
+
+                    const delivery =
+                        document.getElementById(
+                            "delivery"
+                        );
 
                     if(delivery){
 
@@ -2200,20 +1938,13 @@ document.addEventListener(
 
 
                     // ==============================
-                    // OCULTAR INFORMAÇÕES
+                    // OCULTAR RETIRADA
                     // ==============================
 
                     const infoRetirada =
                         document.getElementById(
                             "infoRetirada"
                         );
-
-
-                    const formDelivery =
-                        document.getElementById(
-                            "formDelivery"
-                        );
-
 
                     if(infoRetirada){
 
@@ -2222,6 +1953,15 @@ document.addEventListener(
 
                     }
 
+
+                    // ==============================
+                    // OCULTAR DELIVERY
+                    // ==============================
+
+                    const formDelivery =
+                        document.getElementById(
+                            "formDelivery"
+                        );
 
                     if(formDelivery){
 
@@ -2268,7 +2008,7 @@ document.addEventListener(
 
 
                     // ==============================
-                    // VOLTAR PASSO 1
+                    // VOLTAR PARA PASSO 1
                     // ==============================
 
                     if(paso1){
@@ -2278,13 +2018,19 @@ document.addEventListener(
 
                     }
 
-
                     if(paso2){
 
                         paso2.style.display =
                             "none";
 
                     }
+
+
+                    // ==============================
+                    // LIMPAR MENSAGEM
+                    // ==============================
+
+                    window.mensagemPedido = null;
 
                 }
             );
@@ -2294,26 +2040,9 @@ document.addEventListener(
     }
 );
 
-document.addEventListener("DOMContentLoaded", function(){
 
-    const boton = document.getElementById("abrirWhatsapp");
-
-    console.log("BOTON WHATSAPP:", boton);
-
-    if(boton){
-
-        boton.addEventListener("click", function(){
-
-            console.log("BOTON WHATSAPP FUE PRESIONADO");
-
-        });
-
-    }
-
-});
 
 </script>
-
 <!-- ==============================
      MODAL DO PEDIDO
 ============================== -->
