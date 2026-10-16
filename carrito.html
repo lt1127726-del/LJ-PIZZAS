@@ -1835,17 +1835,51 @@ document.addEventListener(
 
             pedidoEnviado.addEventListener(
                 "click",
-                function(){
+                async function(){
 
                     // ==============================
-                    // REGISTRAR PEDIDO
+                    // REGISTRAR PEDIDO EN GOOGLE FORMS
+                    // No borrar el carrito si la función
+                    // no existe o informa que falló.
                     // ==============================
 
-                    registrarPedidoGoogleSheets();
+                    if(typeof registrarPedidoGoogleForms !== "function"){
+                        console.error(
+                            "❌ registrarPedidoGoogleForms no está disponible. Revisa que carrito.js se haya cargado correctamente."
+                        );
+                        alert(
+                            "Não foi possível registrar o pedido. Tente novamente ou entre em contato com a pizzaria. Seu carrinho foi mantido."
+                        );
+                        return;
+                    }
 
+                    let registroConcluido = false;
+
+                    try{
+                        registroConcluido = await registrarPedidoGoogleForms();
+                    }catch(error){
+                        console.error(
+                            "❌ Erro ao registrar pedido no Google Forms:",
+                            error
+                        );
+                        alert(
+                            "Não foi possível registrar o pedido. Tente novamente. Seu carrinho foi mantido."
+                        );
+                        return;
+                    }
+
+                    if(registroConcluido !== true){
+                        console.error(
+                            "❌ Google Forms não confirmou o registro do pedido."
+                        );
+                        alert(
+                            "Não foi possível confirmar o registro do pedido. Seu carrinho foi mantido para você tentar novamente."
+                        );
+                        return;
+                    }
 
                     // ==============================
-                    // VACIAR CARRINHO
+                    // VACIAR CARRINHO APÓS REGISTRO
                     // ==============================
 
                     vaciarCarrito();
